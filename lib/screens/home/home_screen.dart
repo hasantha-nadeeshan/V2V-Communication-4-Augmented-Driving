@@ -14,6 +14,8 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   String _message = "Waiting for messages...";
+  String _data = "";
+  
   RawDatagramSocket? _socket;
   Future<void> _startListening() async {
     try {
@@ -27,7 +29,8 @@ class _HomeScreenState extends State<HomeScreen> {
           print("looking for packets");
           if (datagram != null) {
             setState(() {
-              _message = "Received message: ${String.fromCharCodes(datagram.data)}";
+              _message = "Receiving messages...";
+            //  _message = "Received message: ${String.fromCharCodes(datagram.data)}";
               print(_message);
             });
           }
