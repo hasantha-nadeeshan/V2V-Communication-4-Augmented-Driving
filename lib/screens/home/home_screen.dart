@@ -18,15 +18,19 @@ class _HomeScreenState extends State<HomeScreen> {
   String _recmsg ="";
   int count = 0;
   List<String> _data=[];
+  List<String> _mydataToList = [];
+  double relativeDistance = 0;
   late Box<String> mydata;
   late Box<String> prevdata;
   late Box<String> dummydata;
+  late Box<String> nearby;
 
   @override
   void initState() {
     super.initState();
     _startListening();
     mydata = Hive.box<String>('mydata');
+    nearby = Hive.box<String>('nearby');
   }
   
   RawDatagramSocket? _socket;
@@ -52,10 +56,16 @@ class _HomeScreenState extends State<HomeScreen> {
                 mydata.put("my",_message);
                 count= count +1;
                 print("box ekata danwa");
+                _mydataToList = mydata.get("my")?.split(',').toList() ?? [];
               }
-              if(_data[0]=="112"){
+              if(_data[0]=="233"){
                 print("pita data");
+
+                nearby.put(_data[0],_message);
+                relativeDistance = distance(double.parse(_mydataToList[1]), double.parse(_mydataToList[2]), double.parse(_data[1]), double.parse(_data[2]));
                 print(_data);
+                print("distance");
+                print(relativeDistance);
                 print("awa");
               }
               if(count == 50){
