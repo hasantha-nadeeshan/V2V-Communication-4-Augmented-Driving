@@ -20,6 +20,7 @@ class _HomeScreenState extends State<HomeScreen> {
   List<String> _data=[];
   List<String> _mydataToList = [];
   double relativeDistance = 0;
+  int miliseconds = 0;
   late Box<String> mydata;
   late Box<String> prevdata;
   late Box<String> dummydata;
@@ -47,8 +48,8 @@ class _HomeScreenState extends State<HomeScreen> {
           if (datagram != null) {
             setState(() {
             //  _message = "Receiving messages...";
-             
-              _message = String.fromCharCodes(datagram.data);
+              DateTime now = DateTime.now();
+              _message = String.fromCharCodes(datagram.data)+DateTime.now().millisecondsSinceEpoch.toString();
               _data = splitString(_message);
               print(_message);
               print(_data);
@@ -58,7 +59,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 print("box ekata danwa");
                 _mydataToList = mydata.get("my")?.split(',').toList() ?? [];
               }
-              if(_data[0]=="233"){
+              if(_data[0]==EMERGENCY_VEHICLE_ID){
                 print("pita data");
 
                 nearby.put(_data[0],_message);
@@ -120,10 +121,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
              
-              SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: DemoPage(),
-              ),
+              // SingleChildScrollView(
+              //   scrollDirection: Axis.horizontal,
+              //   child: DemoPage(),
+              // ),
             ],
           ),
         ),

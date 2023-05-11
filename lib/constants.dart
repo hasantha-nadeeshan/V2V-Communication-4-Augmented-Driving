@@ -8,6 +8,9 @@ const Color backgroundColorDark = Color(0xFF25254B);
 const Color shadowColorLight = Color(0xFF4A5367);
 const Color shadowColorDark = Color.fromARGB(255, 29, 0, 0);
 
+
+const String EMERGENCY_VEHICLE_ID = "233";
+
 List<String> splitString(String csvString) {
   // Split the string using commas as delimiters
   List<String> elements = csvString.split(',');
