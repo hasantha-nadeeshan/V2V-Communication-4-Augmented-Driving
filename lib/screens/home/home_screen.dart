@@ -17,6 +17,7 @@ class _HomeScreenState extends State<HomeScreen> {
   String _message = "Waiting for messages...";
   String _recmsg ="";
   int count = 0;
+  int emgcount = 0;
   List<String> _data=[];
   List<String> _mydataToList = [];
   double relativeDistance = 0;
@@ -25,6 +26,7 @@ class _HomeScreenState extends State<HomeScreen> {
   late Box<String> prevmydata;
   late Box<String> dummydata;
   late Box<String> nearby;
+  late Box<String> prevnearbydata;
 
   @override
   void initState() {
@@ -33,6 +35,7 @@ class _HomeScreenState extends State<HomeScreen> {
     mydata = Hive.box<String>('my-data');
     nearby = Hive.box<String>('nearby');
     prevmydata = Hive.box<String>('prev-my-data');
+    prevnearbydata = Hive.box<String>('prev-nearby-data');
   }
   
   RawDatagramSocket? _socket;
@@ -60,7 +63,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 print("box ekata danwa");
                 _mydataToList = mydata.get("my")?.split(',').toList() ?? [];
               }
-              if(count == 20){
+              if(count == PREVIUOS_POSITION_COUNT){
                 prevmydata.put("my",_message);
                 print("prv data");
                 print(prevmydata.get('my'));
@@ -68,13 +71,16 @@ class _HomeScreenState extends State<HomeScreen> {
               }
               if(_data[0]==EMERGENCY_VEHICLE_ID){
                 print("pita data");
-
                 nearby.put(_data[0],_message);
+                emgcount = emgcount+1;
                 relativeDistance = distance(double.parse(_mydataToList[1]), double.parse(_mydataToList[2]), double.parse(_data[1]), double.parse(_data[2]));
                 print(_data);
                 print("distance");
                 print(relativeDistance);
                 print("awa");
+              }
+              if(emgcount==PREVIUOS_POSITION_COUNT){
+
               }
              
            //   print("box eken out");

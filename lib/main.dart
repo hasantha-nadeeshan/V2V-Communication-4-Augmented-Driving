@@ -18,6 +18,7 @@ void main() async {
   await Hive.openBox<String>('prev-my-data');
   await Hive.openBox<String>('dummy');
   await Hive.openBox<String>('nearby');
+  await Hive.openBox<String>('prev-nearby-data');
   runApp(const MyApp());
 }
 
