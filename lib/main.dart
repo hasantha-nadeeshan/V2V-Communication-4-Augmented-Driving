@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:v2v_Com/components/side_menu.dart';
 import 'package:v2v_Com/screens/home/home_screen.dart';
 import 'package:v2v_Com/entry_point.dart';
@@ -9,9 +12,11 @@ import "package:hive_flutter/hive_flutter.dart";
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
-  await Hive.initFlutter();
-
+  Directory document = await getApplicationDocumentsDirectory();
+  Hive.init(document.path);
+  await Hive.openBox<String>('mydata');
+  await Hive.openBox<String>('prev-data');
+  await Hive.openBox<String>('dummy');
   runApp(const MyApp());
 }
 

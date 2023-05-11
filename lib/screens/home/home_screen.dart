@@ -1,20 +1,32 @@
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 import 'dart:async';
 import 'dart:io';
 import '../../models/dumyData.dart';
 import 'components/course_card.dart';
 import 'components/secondary_course_card.dart';
+import '../../constants.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
-
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
   String _message = "Waiting for messages...";
-  String _data = "";
+  String _recmsg ="";
+  List<String> _data=[];
+  late Box<String> mydata;
+  late Box<String> prevdata;
+  late Box<String> dummydata;
+
+  @override
+  void initState() {
+    super.initState();
+    _startListening();
+    mydata = Hive.box<String>('mydata');
+  }
   
   RawDatagramSocket? _socket;
   Future<void> _startListening() async {
@@ -29,9 +41,19 @@ class _HomeScreenState extends State<HomeScreen> {
           print("looking for packets");
           if (datagram != null) {
             setState(() {
-              _message = "Receiving messages...";
-            //  _message = "Received message: ${String.fromCharCodes(datagram.data)}";
+            //  _message = "Receiving messages...";
+             
+              _message = String.fromCharCodes(datagram.data);
+              _data = splitString(_message);
               print(_message);
+              print(_data);
+              if(_data[0]=="my"){
+                mydata.put("my",_message);
+                print("box ekata danwa");
+              }
+              print("box eken out");
+              print(mydata.get("my"));
+              print("ok gatta");
             });
           }
         }
@@ -39,11 +61,6 @@ class _HomeScreenState extends State<HomeScreen> {
     } catch (e) {
       print("Error: $e");
     }
-  }
-    @override
-  void initState() {
-    super.initState();
-    _startListening();
   }
 
   @override
