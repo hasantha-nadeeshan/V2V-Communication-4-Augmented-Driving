@@ -16,6 +16,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   String _message = "Waiting for messages...";
   String _recmsg ="";
+  int count = 0;
   List<String> _data=[];
   late Box<String> mydata;
   late Box<String> prevdata;
@@ -49,7 +50,16 @@ class _HomeScreenState extends State<HomeScreen> {
               print(_data);
               if(_data[0]=="my"){
                 mydata.put("my",_message);
+                count= count +1;
                 print("box ekata danwa");
+              }
+              if(_data[0]=="112"){
+                print("pita data");
+                print(_data);
+                print("awa");
+              }
+              if(count == 50){
+                mydata.put("prevmy",_message);
               }
               print("box eken out");
               print(mydata.get("my"));
