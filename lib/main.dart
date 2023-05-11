@@ -14,8 +14,8 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   Directory document = await getApplicationDocumentsDirectory();
   Hive.init(document.path);
-  await Hive.openBox<String>('mydata');
-  await Hive.openBox<String>('prev-data');
+  await Hive.openBox<String>('my-data');
+  await Hive.openBox<String>('prev-my-data');
   await Hive.openBox<String>('dummy');
   await Hive.openBox<String>('nearby');
   runApp(const MyApp());

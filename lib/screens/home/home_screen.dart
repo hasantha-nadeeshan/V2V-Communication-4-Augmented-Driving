@@ -22,7 +22,7 @@ class _HomeScreenState extends State<HomeScreen> {
   double relativeDistance = 0;
   int miliseconds = 0;
   late Box<String> mydata;
-  late Box<String> prevdata;
+  late Box<String> prevmydata;
   late Box<String> dummydata;
   late Box<String> nearby;
 
@@ -30,8 +30,9 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     _startListening();
-    mydata = Hive.box<String>('mydata');
+    mydata = Hive.box<String>('my-data');
     nearby = Hive.box<String>('nearby');
+    prevmydata = Hive.box<String>('prev-my-data');
   }
   
   RawDatagramSocket? _socket;
@@ -49,7 +50,7 @@ class _HomeScreenState extends State<HomeScreen> {
             setState(() {
             //  _message = "Receiving messages...";
               DateTime now = DateTime.now();
-              _message = String.fromCharCodes(datagram.data)+DateTime.now().millisecondsSinceEpoch.toString();
+              _message = "${String.fromCharCodes(datagram.data)},${DateTime.now().millisecondsSinceEpoch}";
               _data = splitString(_message);
               print(_message);
               print(_data);
@@ -58,6 +59,12 @@ class _HomeScreenState extends State<HomeScreen> {
                 count= count +1;
                 print("box ekata danwa");
                 _mydataToList = mydata.get("my")?.split(',').toList() ?? [];
+              }
+              if(count == 20){
+                prevmydata.put("my",_message);
+                print("prv data");
+                print(prevmydata.get('my'));
+                count =0;
               }
               if(_data[0]==EMERGENCY_VEHICLE_ID){
                 print("pita data");
@@ -69,12 +76,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 print(relativeDistance);
                 print("awa");
               }
-              if(count == 50){
-                mydata.put("prevmy",_message);
-              }
-              print("box eken out");
-              print(mydata.get("my"));
-              print("ok gatta");
+             
+           //   print("box eken out");
+            //  print(mydata.get("my"));
+            //  print("ok gatta");
             });
           }
         }
