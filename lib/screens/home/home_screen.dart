@@ -20,6 +20,9 @@ class _HomeScreenState extends State<HomeScreen> {
   int emgcount = 0;
   List<String> _data=[];
   List<String> _mydataToList = [];
+  List<String> _myprevdataToList = [];
+  List<String> _emgdataToList = [];
+  List<String>_emgprevdataToList = [];
   double relativeDistance = 0;
   int miliseconds = 0;
   late Box<String> mydata;
@@ -67,6 +70,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 prevmydata.put("my",_message);
                 print("prv data");
                 print(prevmydata.get('my'));
+                _myprevdataToList = prevmydata.get('my')?.split(',').toList() ?? [];
                 count =0;
               }
               if(_data[0]==EMERGENCY_VEHICLE_ID){
@@ -74,13 +78,28 @@ class _HomeScreenState extends State<HomeScreen> {
                 nearby.put(_data[0],_message);
                 emgcount = emgcount+1;
                 relativeDistance = distance(double.parse(_mydataToList[1]), double.parse(_mydataToList[2]), double.parse(_data[1]), double.parse(_data[2]));
+                _emgdataToList = nearby.get(_data[0])?.split(',').toList() ?? [];
                 print(_data);
                 print("distance");
                 print(relativeDistance);
                 print("awa");
+                if(_emgprevdataToList.isNotEmpty && _myprevdataToList.isNotEmpty){
+                  print(emergencyAlert(
+                    double.parse(_mydataToList[4]), double.parse(_emgdataToList[4]),
+                    double.parse(_mydataToList[1]), double.parse(_mydataToList[2]),
+                    double.parse(_emgdataToList[1]), double.parse(_emgdataToList[2]),
+                    double.parse(_myprevdataToList[1]), double.parse(_myprevdataToList[2]),
+                    double.parse(_emgprevdataToList[1]), double.parse(_emgprevdataToList[2]),
+                    ));
+                }
+
               }
               if(emgcount==PREVIUOS_POSITION_COUNT){
-
+                prevnearbydata.put(_data[0],_message);
+                _emgprevdataToList = prevnearbydata.get(_data[0])?.split(',').toList() ?? [];
+                print("prv data nearby");
+                print(prevnearbydata.get('my'));
+                emgcount =0;
               }
              
            //   print("box eken out");

@@ -115,3 +115,17 @@ String inFrontBehind(double lonH1, double latH1, double lonX1, double latX1,doub
     }
   }
 }
+
+
+///////////////////////////////////////// emergency vehicle sample //////////////////////////////////////////////////
+String emergencyAlert(double Heading_H, double Heading_X, double lonH1, double latH1, double lonX1, double latX1, double lonH2, double latH2, double lonX2, double latX2) {
+  if (separateLanes(Heading_X, Heading_H) == "same") {
+    if (inFrontBehind(lonH1, latH1, lonX1, latX1, lonH2, latH2, lonX2, latX2) == "behind") {
+      return "emergency";
+    }else{
+    return "No emg";
+    }
+  }else{
+    return "No emg";
+  }
+}
