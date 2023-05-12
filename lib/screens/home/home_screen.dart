@@ -58,49 +58,52 @@ class _HomeScreenState extends State<HomeScreen> {
               DateTime now = DateTime.now();
               _message = "${String.fromCharCodes(datagram.data)},${DateTime.now().millisecondsSinceEpoch}";
               _data = splitString(_message);
-              print(_message);
-              print(_data);
+            //  print(_message);
+            //  print(_data);
               if(_data[0]=="my"){
                 mydata.put("my",_message);
                 count= count +1;
-                print("box ekata danwa");
-                _mydataToList = mydata.get("my")?.split(',').toList() ?? [];
-              }
-              if(count == PREVIUOS_POSITION_COUNT){
-                prevmydata.put("my",_message);
-                print("prv data");
-                print(prevmydata.get('my'));
-                _myprevdataToList = prevmydata.get('my')?.split(',').toList() ?? [];
-                count =0;
+              //  print("box ekata danwa");
               }
               if(_data[0]==EMERGENCY_VEHICLE_ID){
-                print("pita data");
+              //  print("pita data");
                 nearby.put(_data[0],_message);
                 emgcount = emgcount+1;
                 relativeDistance = distance(double.parse(_mydataToList[1]), double.parse(_mydataToList[2]), double.parse(_data[1]), double.parse(_data[2]));
                 _emgdataToList = nearby.get(_data[0])?.split(',').toList() ?? [];
-                print(_data);
+              //  print(_data);
                 print("distance");
                 print(relativeDistance);
-                print("awa");
+              //  print("awa");
                 if(_emgprevdataToList.isNotEmpty && _myprevdataToList.isNotEmpty){
+                  
+                  _myprevdataToList = prevmydata.get('my')?.split(',').toList() ?? [];
+                  _emgprevdataToList = prevnearbydata.get(EMERGENCY_VEHICLE_ID)?.split(',').toList() ?? [];
+                  _emgdataToList = nearby.get(EMERGENCY_VEHICLE_ID)?.split(',').toList() ?? [];
+                  _mydataToList = mydata.get("my")?.split(',').toList() ?? [];
+                  print(_mydataToList);
+                  print(_myprevdataToList);
+                  print(_emgdataToList);
+                  print(_emgprevdataToList);
                   print(emergencyAlert(
-                    double.parse(_mydataToList[4]), double.parse(_emgdataToList[4]),
-                    double.parse(_mydataToList[1]), double.parse(_mydataToList[2]),
-                    double.parse(_emgdataToList[1]), double.parse(_emgdataToList[2]),
+                    double.parse(_mydataToList[3]), double.parse(_emgdataToList[4]),
                     double.parse(_myprevdataToList[1]), double.parse(_myprevdataToList[2]),
                     double.parse(_emgprevdataToList[1]), double.parse(_emgprevdataToList[2]),
+                    double.parse(_mydataToList[1]), double.parse(_mydataToList[2]),
+                    double.parse(_emgdataToList[1]), double.parse(_emgdataToList[2])   
                     ));
                 }
 
               }
-              if(emgcount==PREVIUOS_POSITION_COUNT){
-                prevnearbydata.put(_data[0],_message);
-                _emgprevdataToList = prevnearbydata.get(_data[0])?.split(',').toList() ?? [];
-                print("prv data nearby");
-                print(prevnearbydata.get('my'));
-                emgcount =0;
+              if(count == PREVIUOS_POSITION_COUNT){
+                _myprevdataToList = mydata.get('my')?.split(',').toList() ?? [];
+                _emgprevdataToList = nearby.get(EMERGENCY_VEHICLE_ID)?.split(',').toList() ?? [];
+                prevmydata.put('my', _myprevdataToList.join(','));
+                prevnearbydata.put(EMERGENCY_VEHICLE_ID, _emgprevdataToList.join(','));
+                count =0;
               }
+              
+              
              
            //   print("box eken out");
             //  print(mydata.get("my"));

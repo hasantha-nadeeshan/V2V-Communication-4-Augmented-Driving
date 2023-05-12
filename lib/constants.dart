@@ -9,9 +9,9 @@ const Color shadowColorLight = Color(0xFF4A5367);
 const Color shadowColorDark = Color.fromARGB(255, 29, 0, 0);
 
 
-const String EMERGENCY_VEHICLE_ID = "233";
+const String EMERGENCY_VEHICLE_ID = "34";
 
-const int PREVIUOS_POSITION_COUNT = 20;
+const int PREVIUOS_POSITION_COUNT = 50;
 
 List<String> splitString(String csvString) {
   // Split the string using commas as delimiters
@@ -77,7 +77,7 @@ double distance(double lon1, double lat1, double lon2 , double lat2) {
 ///////////////////////////////////////// to identify vahicles in smae and opposite lanes ///////////////////////////////////////////////
 String separateLanes(double headingX, double headingH) {
   double headingDifference = (headingH - headingX).abs();
-  double theta = 5; // theta = threshold heading difference
+  double theta = 20; // theta = threshold heading difference
   
   if (headingDifference <= theta) {
     return "same";
@@ -99,33 +99,46 @@ String inFrontBehind(double lonH1, double latH1, double lonX1, double latX1,doub
 
   if (X1_H1 < X2_H1) {
     if (H2_H1 < X2_H1) {
+      print("infront");
       return ("in front");
     } else {
+      print('behind');
       return ("behind");
     }
   } else {
     if (H2_H1 < X2_H1) {
       if (X2_X1 > H2_H1) {
+        print("infront");
         return ("in front");
       } else {
+        print('behind');
         return ("behind");
       }
     } else {
+      print('behind');
       return ("behind");
     }
   }
 }
 
+int emgcount =0;
+ int noemgcount =0;
 
 ///////////////////////////////////////// emergency vehicle sample //////////////////////////////////////////////////
 String emergencyAlert(double Heading_H, double Heading_X, double lonH1, double latH1, double lonX1, double latX1, double lonH2, double latH2, double lonX2, double latX2) {
-  if (separateLanes(Heading_X, Heading_H) == "same") {
+  //if (separateLanes(Heading_X, Heading_H) == "same") {
     if (inFrontBehind(lonH1, latH1, lonX1, latX1, lonH2, latH2, lonX2, latX2) == "behind") {
-      return "emergency";
+      emgcount=emgcount+1;
+      return "emergency "+emgcount.toString();
     }else{
-    return "No emg";
+      noemgcount = noemgcount+1;
+    return "no emergency "+ noemgcount.toString();
     }
-  }else{
-    return "No emg";
-  }
+  //}
+  // else{
+  //   noemgcount= noemgcount+1;
+  //   print("heading problem");
+  //   return "no emergency "+ noemgcount.toString();
+  // }
 }
+
