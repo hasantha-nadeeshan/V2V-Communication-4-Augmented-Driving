@@ -16,6 +16,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   String _message = "Waiting for messages...";
   String _recmsg ="";
+  String emgon="";
   int count = 0;
   int emgcount = 0;
   List<String> _data=[];
@@ -64,6 +65,14 @@ class _HomeScreenState extends State<HomeScreen> {
                 mydata.put("my",_message);
                 count= count +1;
               //  print("box ekata danwa");
+                _mydataToList = mydata.get("my")?.split(',').toList() ?? [];
+              }
+              if(count == PREVIUOS_POSITION_COUNT){
+                _myprevdataToList = mydata.get('my')?.split(',').toList() ?? [];
+                _emgprevdataToList = nearby.get(EMERGENCY_VEHICLE_ID)?.split(',').toList() ?? [];
+                prevmydata.put('my', _myprevdataToList.join(','));
+                prevnearbydata.put(EMERGENCY_VEHICLE_ID, _emgprevdataToList.join(','));
+                count =0;
               }
               if(_data[0]==EMERGENCY_VEHICLE_ID){
               //  print("pita data");
@@ -80,29 +89,27 @@ class _HomeScreenState extends State<HomeScreen> {
                   _myprevdataToList = prevmydata.get('my')?.split(',').toList() ?? [];
                   _emgprevdataToList = prevnearbydata.get(EMERGENCY_VEHICLE_ID)?.split(',').toList() ?? [];
                   _emgdataToList = nearby.get(EMERGENCY_VEHICLE_ID)?.split(',').toList() ?? [];
-                  _mydataToList = mydata.get("my")?.split(',').toList() ?? [];
                   print(_mydataToList);
                   print(_myprevdataToList);
                   print(_emgdataToList);
                   print(_emgprevdataToList);
-                  print(emergencyAlert(
+                  if(relativeDistance>10){
+                    emgon = emergencyAlert(
                     double.parse(_mydataToList[3]), double.parse(_emgdataToList[4]),
                     double.parse(_myprevdataToList[1]), double.parse(_myprevdataToList[2]),
                     double.parse(_emgprevdataToList[1]), double.parse(_emgprevdataToList[2]),
                     double.parse(_mydataToList[1]), double.parse(_mydataToList[2]),
-                    double.parse(_emgdataToList[1]), double.parse(_emgdataToList[2])   
-                    ));
+                    double.parse(_emgdataToList[1]), double.parse(_emgdataToList[2])
+                    );
+                  }
+                  print("Emmergency new algo||");
+                  print(emgon);
+                  print("************Done**********");
+
+                  
                 }
 
               }
-              if(count == PREVIUOS_POSITION_COUNT){
-                _myprevdataToList = mydata.get('my')?.split(',').toList() ?? [];
-                _emgprevdataToList = nearby.get(EMERGENCY_VEHICLE_ID)?.split(',').toList() ?? [];
-                prevmydata.put('my', _myprevdataToList.join(','));
-                prevnearbydata.put(EMERGENCY_VEHICLE_ID, _emgprevdataToList.join(','));
-                count =0;
-              }
-              
               
              
            //   print("box eken out");
