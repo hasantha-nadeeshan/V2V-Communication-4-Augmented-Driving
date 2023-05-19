@@ -9,9 +9,10 @@ const Color shadowColorLight = Color(0xFF4A5367);
 const Color shadowColorDark = Color.fromARGB(255, 29, 0, 0);
 
 
-const String EMERGENCY_VEHICLE_ID = "39";
+const String EMERGENCY_VEHICLE_ID = "249";
 
 const int PREVIUOS_POSITION_COUNT = 50;
+const int BUFFER_SIZE = 30;
 
 List<String> splitString(String csvString) {
   // Split the string using commas as delimiters
@@ -129,10 +130,10 @@ String emergencyAlert(double Heading_H, double Heading_X, double lonH1, double l
   //if (separateLanes(Heading_X, Heading_H) == "same") {
     if (inFrontBehind(lonH1, latH1, lonX1, latX1, lonH2, latH2, lonX2, latX2) == "behind") {
       emgcount=emgcount+1;
-      return "emergency "+emgcount.toString();
+      return "emergency";
     }else{
       noemgcount = noemgcount+1;
-    return "no emergency "+ noemgcount.toString();
+    return "no emergency";
     }
   //}
   // else{
@@ -141,4 +142,16 @@ String emergencyAlert(double Heading_H, double Heading_X, double lonH1, double l
   //   return "no emergency "+ noemgcount.toString();
   // }
 }
+///////////////////////////////////////// accident ahead sample //////////////////////////////////////////////////
+String accidentAheadAlert(double Heading_H, double Heading_X, double lonH1, double latH1, double lonX1, double latX1, double lonH2, double latH2, double lonX2, double latX2, double spdX2) {
+  if (separateLanes(Heading_X, Heading_H) == "same") {
+    if (inFrontBehind(lonH1, latH1, lonX1, latX1, lonH2, latH2, lonX2, latX2) == "infront" && spdX2 <10) {
+      return "accident";
+    }else{
+    return "";
+    }
+  }else{
+    return "";
+  }
 
+}

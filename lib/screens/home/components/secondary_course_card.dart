@@ -48,9 +48,7 @@ class _DemoPageState extends State<DemoPage> {
                         frameChangeDuration: Duration(milliseconds: 30),
                         swipeSensitivity: swipeSensitivity,
                         allowSwipeToRotate: allowSwipeToRotate,
-                        onImageIndexChanged: (currentImageIndex) {
-                          print("currentImageIndex: $currentImageIndex");
-                        },
+                       
                       )
                     : Text("Pre-Caching images..."),
                 

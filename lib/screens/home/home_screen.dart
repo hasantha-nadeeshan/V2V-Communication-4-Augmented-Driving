@@ -3,6 +3,8 @@ import 'package:hive/hive.dart';
 import 'dart:async';
 import 'dart:io';
 import '../../models/dumyData.dart';
+import '../popupcards/emergency.dart';
+import '../popupcards/accident.dart';
 import 'components/course_card.dart';
 import 'components/secondary_course_card.dart';
 import '../../constants.dart';
@@ -17,6 +19,10 @@ class _HomeScreenState extends State<HomeScreen> {
   String _message = "Waiting for messages...";
   String _recmsg ="";
   String emgon="";
+  String accion="";
+  bool showEmergency = false;
+  bool showAccident = false;
+  bool isUpdating = false;
   int count = 0;
   int emgcount = 0;
   List<String> _data=[];
@@ -24,8 +30,12 @@ class _HomeScreenState extends State<HomeScreen> {
   List<String> _myprevdataToList = [];
   List<String> _emgdataToList = [];
   List<String>_emgprevdataToList = [];
+  List<String> currentState =[];
   double relativeDistance = 0;
   int miliseconds = 0;
+  int emggcount =0;
+  int noemggcount=0;
+
   late Box<String> mydata;
   late Box<String> prevmydata;
   late Box<String> dummydata;
@@ -68,13 +78,14 @@ class _HomeScreenState extends State<HomeScreen> {
                 _mydataToList = mydata.get("my")?.split(',').toList() ?? [];
               }
               if(count == PREVIUOS_POSITION_COUNT){
+                isUpdating = true;
                 _myprevdataToList = mydata.get('my')?.split(',').toList() ?? [];
                 _emgprevdataToList = nearby.get(EMERGENCY_VEHICLE_ID)?.split(',').toList() ?? [];
                 prevmydata.put('my', _myprevdataToList.join(','));
                 prevnearbydata.put(EMERGENCY_VEHICLE_ID, _emgprevdataToList.join(','));
                 count =0;
               }
-              if(_data[0]==EMERGENCY_VEHICLE_ID){
+              if(_data[0]==EMERGENCY_VEHICLE_ID && !isUpdating){
               //  print("pita data");
                 nearby.put(_data[0],_message);
                 emgcount = emgcount+1;
@@ -101,16 +112,55 @@ class _HomeScreenState extends State<HomeScreen> {
                     double.parse(_mydataToList[1]), double.parse(_mydataToList[2]),
                     double.parse(_emgdataToList[1]), double.parse(_emgdataToList[2])
                     );
+                    accion = accidentAheadAlert(
+                    double.parse(_mydataToList[3]), double.parse(_emgdataToList[4]),
+                    double.parse(_myprevdataToList[1]), double.parse(_myprevdataToList[2]),
+                    double.parse(_emgprevdataToList[1]), double.parse(_emgprevdataToList[2]),
+                    double.parse(_mydataToList[1]), double.parse(_mydataToList[2]),
+                    double.parse(_emgdataToList[1]), double.parse(_emgdataToList[2]),
+                    double.parse(_emgdataToList[4])
+                    );
+                    currentState.add(emgon);
+                    if(currentState.length >BUFFER_SIZE){
+                      currentState.removeAt(0);
+                    }
+                    print(currentState);
                   }
                   print("Emmergency new algo||");
                   print(emgon);
+                  
+                  // if(emgon == "emergency" && !showEmergency){
+                  //     showEmergency = true;
+                      
+                  //   }
+                  // else if(emgon == "emergency"){
+                  //   showEmergency = true;
+                  // }
+                  // // if(accion == "accident"){
+                  // //     showAccident = true;
+                  // //   }
+                  // else{
+                  //     showEmergency = false;
+                  //     showAccident = false;
+                  //   }
+                  emggcount = currentState.where((item) => item == "emergency").length;
+                noemggcount = currentState.where((item) => item == "no emergency").length;
+
+                if(currentState.length == BUFFER_SIZE && emggcount>= noemggcount){
+                  showEmergency =true;
+                }
+                else{
+                  showEmergency = false;
+                }
                   print("************Done**********");
 
                   
                 }
+                
+                
 
               }
-              
+              isUpdating = false;
              
            //   print("box eken out");
             //  print(mydata.get("my"));
@@ -161,10 +211,22 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
              
-              // SingleChildScrollView(
-              //   scrollDirection: Axis.horizontal,
-              //   child: DemoPage(),
-              // ),
+               SingleChildScrollView(
+                 scrollDirection: Axis.horizontal,
+                 child: showEmergency? (Center(
+                   child: emergencyAlertShow(),
+                 ))
+              : Text(""),
+               ),
+              // if (showEmergency)em
+              //   Center(
+              //     child: emergencyAlertShow(),
+              //   ),
+              // if(showAccident)
+              //   Center(
+                 //  child: accidentShow(),
+               //  )
+              
             ],
           ),
         ),
