@@ -1,8 +1,9 @@
 import 'dart:ui';
-
+import 'package:hive/hive.dart';
 import 'package:flutter/material.dart';
 import 'package:rive/rive.dart';
-
+import 'package:hive/hive.dart';
+import '../home/home_screen.dart';
 import 'components/animated_btn.dart';
 import 'components/custom_sign_in_dialog.dart';
 
@@ -18,19 +19,22 @@ class OnboardingScreen extends StatefulWidget {
 class _OnboardingScreenState extends State<OnboardingScreen> {
   bool isSignInDialogShown = false;
   late RiveAnimationController _btnAnimationColtroller;
-
+  late Box<String> logdata;
+  List<String> _logDataToList=[];
   @override
   void initState() {
     _btnAnimationColtroller = OneShotAnimation(
       "active",
       autoplay: false,
     );
+    logdata = Hive.box('login');
+    _logDataToList = logdata.get('my')?.split(',').toList() ?? [];
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return _logDataToList.isEmpty ? Scaffold(
       body: Stack(
         children: [
           Positioned(
@@ -119,6 +123,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           )
         ],
       ),
-    );
+    ) : HomeScreen();
   }
 }

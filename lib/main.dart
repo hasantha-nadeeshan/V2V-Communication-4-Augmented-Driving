@@ -19,17 +19,19 @@ void main() async {
   await Hive.openBox<String>('dummy');
   await Hive.openBox<String>('nearby');
   await Hive.openBox<String>('prev-nearby-data');
+  await Hive.openBox<String>('login');
   runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
+  
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'The Flutter Way',
+      title: 'V2V Communication',
       theme: ThemeData(
         scaffoldBackgroundColor:  Colors.white,
         primarySwatch: Colors.blue,

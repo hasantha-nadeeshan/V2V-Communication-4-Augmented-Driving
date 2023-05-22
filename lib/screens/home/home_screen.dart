@@ -20,8 +20,8 @@ class _HomeScreenState extends State<HomeScreen> {
   String _recmsg ="";
   String emgon="";
   String accion="";
-  bool showEmergency = true;
-  bool showAccident = false;
+  bool showEmergency = false;
+  bool showAccident = true;
   bool isUpdating = false;
   int count = 0;
   List<String> _data=[];
@@ -150,7 +150,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       body: SafeArea(
         bottom: false,
-        child: showEmergency? emergencyAlertShow() : SingleChildScrollView(
+        child: showEmergency? emergencyAlertShow() : showAccident? accidentAlertShow(): SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [

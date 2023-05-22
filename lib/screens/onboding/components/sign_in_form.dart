@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:hive/hive.dart';
 import 'package:rive/rive.dart';
 import 'package:v2v_Com/entry_point.dart';
 import 'package:v2v_Com/utils/rive_utils.dart';
@@ -29,11 +30,20 @@ class _SignInFormState extends State<SignInForm> {
 
   late SMITrigger confetti;
 
+  late Box<String> login;
+   @override
+  void initState() {
+    login = Hive.box('login');
+    super.initState();
+    
+  }
+  
   void signIn(BuildContext context) {
     setState(() {
       isShowLoading = true;
       isShowConfetti = true;
     });
+    login.put('log', '1');
     Future.delayed(
       Duration(seconds: 1),
       () {
@@ -137,6 +147,7 @@ class _SignInFormState extends State<SignInForm> {
                 padding: const EdgeInsets.only(top: 8, bottom: 24),
                 child: ElevatedButton.icon(
                   onPressed: () {
+                    //add login to database here
                     signIn(context);
                   },
                   style: ElevatedButton.styleFrom(
