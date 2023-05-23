@@ -65,7 +65,6 @@ class _HomeScreenState extends State<HomeScreen> {
               setState(() {
                 DateTime now = DateTime.now();
                 _message = "${String.fromCharCodes(datagram.data)},${DateTime.now().millisecondsSinceEpoch}";
-                file.writeAsString(_message);
                 _data = splitString(_message);
 
                 if(_data[0]=="my"){             //detecting my packets
@@ -82,12 +81,12 @@ class _HomeScreenState extends State<HomeScreen> {
                   prevnearbydata.put(EMERGENCY_VEHICLE_ID, _emgprevdataToList.join(','));
                   count =0;
                 }
-                if(_data[0]==EMERGENCY_VEHICLE_ID && !isUpdating){      //When emmergency data comes ans not updating loop
-                  nearby.put(EMERGENCY_VEHICLE_ID,_message);
+                if(_data[0]!='my' && !isUpdating){      //When emmergency data comes ans not updating loop
+                  nearby.put(_data[0],_message);
                   _mydataToList = mydata.get("my")?.split(',').toList() ?? [];
-                  _emgdataToList = nearby.get(EMERGENCY_VEHICLE_ID)?.split(',').toList() ?? [];
+                  _emgdataToList = nearby.get(_data[0])?.split(',').toList() ?? [];
                   _myprevdataToList = prevmydata.get('my')?.split(',').toList() ?? [];
-                  _emgprevdataToList = prevnearbydata.get(EMERGENCY_VEHICLE_ID)?.split(',').toList() ?? [];
+                  _emgprevdataToList = prevnearbydata.get(_data[0])?.split(',').toList() ?? [];
                   relativeDistance = distance(double.parse(_mydataToList[1]), double.parse(_mydataToList[2]), double.parse(_emgdataToList[1]), double.parse(_emgdataToList[2]));
                   print("distance , ${relativeDistance.toString()}");
 
@@ -121,6 +120,17 @@ class _HomeScreenState extends State<HomeScreen> {
                       noemggcount = currentState.where((item) => item == "no emergency").length;
 
                       if(currentState.length == BUFFER_SIZE && emggcount >= noemggcount){
+                        file.writeAsString(_mydataToList.join(',')+"\n");
+                        file.writeAsString(_myprevdataToList.join(',')+"\n");
+                        file.writeAsString(_emgdataToList.join(',')+"\n");
+                        file.writeAsString(_emgprevdataToList.join(',')+"\n");
+                        file.writeAsString(inFrontBehind(
+                                                          double.parse(_myprevdataToList[1]), double.parse(_myprevdataToList[2]),
+                                                          double.parse(_emgprevdataToList[1]), double.parse(_emgprevdataToList[2]),
+                                                          double.parse(_mydataToList[1]), double.parse(_mydataToList[2]),
+                                                          double.parse(_emgdataToList[1]), double.parse(_emgdataToList[2]))+"\n");
+                        file.writeAsString("*****************Emergency****************+\n");
+
                         showEmergency =true;
                       }
                       else if(currentState.length == BUFFER_SIZE && emggcount < noemggcount){

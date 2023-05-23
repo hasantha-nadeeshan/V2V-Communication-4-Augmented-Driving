@@ -32,6 +32,15 @@ List<String> splitString(String csvString) {
   return elements;
 }
 
+double acceleration(double v1, double v2, double t1, double t2 ){
+  if(t1==t1){
+    return 0;
+  }
+  else{
+    return ((v2-v1)*1000/(t2-t1)*3600);
+  }
+}
+
 double distance(double lon1, double lat1, double lon2 , double lat2) {
   // WGS-84 ellipsoid constants
   const double a = 6378137.0;
@@ -127,7 +136,7 @@ String inFrontBehind(double lonH1, double latH1, double lonX1, double latX1,doub
         return ("behind");
       }
     } else {
-      print('behind')
+      print('behind');
       return ("behind");
     }
   }
