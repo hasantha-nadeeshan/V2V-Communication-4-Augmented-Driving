@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'dart:math';
 import 'package:vector_math/vector_math.dart';
@@ -9,10 +11,15 @@ const Color shadowColorLight = Color(0xFF4A5367);
 const Color shadowColorDark = Color.fromARGB(255, 29, 0, 0);
 
 
-const String EMERGENCY_VEHICLE_ID = "249";
+const String EMERGENCY_VEHICLE_ID = "219";
 
-const int PREVIUOS_POSITION_COUNT = 20;
-const int BUFFER_SIZE = 30;
+const int PREVIUOS_POSITION_COUNT = 50;
+const int BUFFER_SIZE = 10;
+
+Directory outputdir = new Directory("E:FYP\Test Data\test.txt");
+
+
+
 
 List<String> splitString(String csvString) {
   // Split the string using commas as delimiters
@@ -92,15 +99,19 @@ String separateLanes(double headingX, double headingH) {
 
 //////////////////////////////////////////////////// to identify vehicles which are in front and behind in the same lane //////////////////////////////////////////////
 
+//////////////////////////////////////////////////// to identify vehicles which are in front and behind in the SAME lane //////////////////////////////////////////////
+
 String inFrontBehind(double lonH1, double latH1, double lonX1, double latX1,double lonH2, double latH2, double lonX2, double latX2) {
   double X1_H1 = distance(lonH1, latH1, lonX1, latX1); // previous distance between remote and host vehicles
   double X2_H1 = distance(lonH1, latH1, lonX2, latX2); // distance between remote vehicle's current position and remote vehicle's previous position
   double H2_H1 = distance(lonH2, latH2, lonH1, latH1); // distance between host vehicle's current position and its previous position
   double X2_X1 = distance(lonX2, latX2, lonX1, latX1); // distance between remote vehicle's current position and its previous position
+  double H2_X1 = distance(lonH2, latH2, lonX1, latX1); // distance between host vehicle's current position and remote vehicle's previous position
+
 
   if (X1_H1 < X2_H1) {
-    if (H2_H1 < X2_H1) {
-      print("infront");
+    if (H2_H1 < X2_H1 && X2_X1 > X1_H1) {    // second constrain only due to gps inacuracy
+      print('infront');
       return ("in front");
     } else {
       print('behind');
@@ -108,15 +119,15 @@ String inFrontBehind(double lonH1, double latH1, double lonX1, double latX1,doub
     }
   } else {
     if (H2_H1 < X2_H1) {
-      if (X2_X1 > H2_H1) {
-        print("infront");
+      if (H2_X1 <X2_X1) {
+        print('infront');
         return ("in front");
       } else {
         print('behind');
         return ("behind");
       }
     } else {
-      print('behind');
+      print('behind')
       return ("behind");
     }
   }
@@ -127,7 +138,7 @@ int emgcount =0;
 
 ///////////////////////////////////////// emergency vehicle sample //////////////////////////////////////////////////
 String emergencyAlert(double Heading_H, double Heading_X, double lonH1, double latH1, double lonX1, double latX1, double lonH2, double latH2, double lonX2, double latX2) {
-  if (separateLanes(Heading_X, Heading_H) == "same") {
+  // if (separateLanes(Heading_X, Heading_H) == "same") {
     if (inFrontBehind(lonH1, latH1, lonX1, latX1, lonH2, latH2, lonX2, latX2) == "behind") {
       emgcount=emgcount+1;
       return "emergency";
@@ -137,22 +148,18 @@ String emergencyAlert(double Heading_H, double Heading_X, double lonH1, double l
     return "no emergency";
     }
   }
-  else{
-    noemgcount= noemgcount+1;
-    print("heading problem");
-    return "no emergency ";
-  }
-}
+  // else{
+  //   noemgcount= noemgcount+1;
+  //   print("heading problem");
+  //   return "no emergency ";
+  // }
+//}
 ///////////////////////////////////////// accident ahead sample //////////////////////////////////////////////////
 String accidentAheadAlert(double Heading_H, double Heading_X, double lonH1, double latH1, double lonX1, double latX1, double lonH2, double latH2, double lonX2, double latX2, double spdX2) {
   if (separateLanes(Heading_X, Heading_H) == "same") {
     if (inFrontBehind(lonH1, latH1, lonX1, latX1, lonH2, latH2, lonX2, latX2) == "infront" && spdX2 <10) {
       return "accident";
-    }else{
-    return "";
     }
-  }else{
-    return "";
   }
-
+  return "";
 }

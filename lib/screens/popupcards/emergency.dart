@@ -8,17 +8,19 @@ class emergencyAlertShow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-            color: backgroundColorDark,
-            child: Center(  
-              child: 
-                AlertDialog(
-                  title: const Text('Emergency Alert'),
-                  content: const Text('Emergency situation detected.'),
-                  backgroundColor: Colors.red,
-                ),
+    return
+            Container(
               
-      ),
-    );
+              child: Center(  
+                  child: 
+                    AlertDialog(
+                      title: const Text('Emergency Alert'),
+                      content: const Text('Emergency situation detected.'),
+                      backgroundColor: Colors.red,
+                    ),
+                  
+                  
+                ),
+            );
   }
 }

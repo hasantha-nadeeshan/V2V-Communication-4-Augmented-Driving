@@ -20,8 +20,8 @@ class _HomeScreenState extends State<HomeScreen> {
   String _recmsg ="";
   String emgon="";
   String accion="";
-  bool showEmergency = false;
-  bool showAccident = true;
+  bool showEmergency = true;
+  bool showAccident = false;
   bool isUpdating = false;
   int count = 0;
   List<String> _data=[];
@@ -34,6 +34,8 @@ class _HomeScreenState extends State<HomeScreen> {
   int miliseconds = 0;
   int emggcount =0;
   int noemggcount=0;
+
+  final file = File(outputdir.path);
 
   late Box<String> mydata;
   late Box<String> prevmydata;
@@ -63,6 +65,7 @@ class _HomeScreenState extends State<HomeScreen> {
               setState(() {
                 DateTime now = DateTime.now();
                 _message = "${String.fromCharCodes(datagram.data)},${DateTime.now().millisecondsSinceEpoch}";
+                file.writeAsString(_message);
                 _data = splitString(_message);
 
                 if(_data[0]=="my"){             //detecting my packets
@@ -110,21 +113,22 @@ class _HomeScreenState extends State<HomeScreen> {
                       double.parse(_emgdataToList[4])
                       );
                       currentState.add(emgon);
-                      if(currentState.length >BUFFER_SIZE){
-                        currentState.removeAt(0);
+                      if(currentState.length == BUFFER_SIZE+1){
+                        currentState.clear();
                       }
                       print(currentState);
+                      emggcount = currentState.where((item) => item == "emergency").length;
+                      noemggcount = currentState.where((item) => item == "no emergency").length;
+
+                      if(currentState.length == BUFFER_SIZE && emggcount >= noemggcount){
+                        showEmergency =true;
+                      }
+                      else if(currentState.length == BUFFER_SIZE && emggcount < noemggcount){
+                        showEmergency = false;
+                      }
                     }
                     
-                    emggcount = currentState.where((item) => item == "emergency").length;
-                    noemggcount = currentState.where((item) => item == "no emergency").length;
-
-                    if(currentState.length == BUFFER_SIZE && emggcount > noemggcount){
-                      showEmergency =true;
-                    }
-                    else{
-                      showEmergency = false;
-                    }
+                    
                     print("************Done**********");  
                   }
                 
@@ -148,9 +152,10 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: backgroundColorDark,
       body: SafeArea(
         bottom: false,
-        child: showEmergency? emergencyAlertShow() : showAccident? accidentAlertShow(): SingleChildScrollView(
+        child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -176,11 +181,11 @@ class _HomeScreenState extends State<HomeScreen> {
                   ],
                 ),
               ),
+
+              showEmergency? Center(
+                child: emergencyAlertShow(),
+              ) : Text('')
              
-               SingleChildScrollView(
-                 scrollDirection: Axis.horizontal,
-                 child: DemoPage(),
-             ),
               
               
             ],
