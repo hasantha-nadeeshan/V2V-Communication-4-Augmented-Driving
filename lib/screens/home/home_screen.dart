@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
+import 'package:path_provider/path_provider.dart';
 import 'dart:async';
 import 'dart:io';
 import '../../models/dumyData.dart';
@@ -35,7 +36,7 @@ class _HomeScreenState extends State<HomeScreen> {
   int emggcount =0;
   int noemggcount=0;
 
-  final file = File(outputdir.path);
+  File file = File(outputdir.path);
 
   late Box<String> mydata;
   late Box<String> prevmydata;
@@ -57,6 +58,8 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<void> _startListening() async {
     try {
           _socket = await RawDatagramSocket.bind("169.254.129.201", 5005);
+          Directory document = await getApplicationDocumentsDirectory();
+          file = File(document.path);
           _socket!.listen((event) {
           if (event == RawSocketEvent.read) {
             final datagram = _socket!.receive();
@@ -120,16 +123,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       noemggcount = currentState.where((item) => item == "no emergency").length;
 
                       if(currentState.length == BUFFER_SIZE && emggcount >= noemggcount){
-                        file.writeAsString(_mydataToList.join(',')+"\n");
-                        file.writeAsString(_myprevdataToList.join(',')+"\n");
-                        file.writeAsString(_emgdataToList.join(',')+"\n");
-                        file.writeAsString(_emgprevdataToList.join(',')+"\n");
-                        file.writeAsString(inFrontBehind(
-                                                          double.parse(_myprevdataToList[1]), double.parse(_myprevdataToList[2]),
-                                                          double.parse(_emgprevdataToList[1]), double.parse(_emgprevdataToList[2]),
-                                                          double.parse(_mydataToList[1]), double.parse(_mydataToList[2]),
-                                                          double.parse(_emgdataToList[1]), double.parse(_emgdataToList[2]))+"\n");
-                        file.writeAsString("*****************Emergency****************+\n");
+                        print("Emergency");
 
                         showEmergency =true;
                       }
@@ -162,46 +156,53 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: backgroundColorDark,
+      backgroundColor: ThemeClass.darkTheme.scaffoldBackgroundColor,
       body: SafeArea(
         bottom: false,
-        child: SingleChildScrollView(
+        
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const SizedBox(height: 40),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(20, 40, 0, 15),
-                child: Text(
-                  _message,
-                  style: Theme.of(context).textTheme.headlineMedium!.copyWith(
-                      color: Colors.black, fontWeight: FontWeight.w600),
-                ),
+              const SizedBox(height: 20),
+              Center(
+                child: ElevatedButton(
+                    
+                    onPressed: () {},
+                    // style: ButtonStyle(elevation: MaterialStateProperty(12.0 )),
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.green,
+                        elevation: 12.0,
+                        textStyle: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 20.0,
+                          fontWeight: FontWeight.bold,
+                          )),
+                        
+                    child: const Text('SAFE MODE'),
+                  ),
               ),
-              SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
+              const SizedBox(height: 50),
+              Center(
                 child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    ...courses
-                        .map((course) => Padding(
-                              padding: const EdgeInsets.only(left: 20),
-                              child: CourseCard(course: course),
-                            ))
-                        .toList(),
+                    Text("spd"),
+                    const SizedBox(width: 30),
+                    Text("65"),
+                    Text("limit")
                   ],
                 ),
-              ),
+              )
+              
 
-              showEmergency? Center(
-                child: emergencyAlertShow(),
-              ) : Text('')
+              
              
               
               
             ],
           ),
         ),
-      ),
-    );
+      );
+    
   }
 }

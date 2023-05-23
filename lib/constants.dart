@@ -1,8 +1,9 @@
 import 'dart:io';
+import 'package:flutter/material.dart' show Color, Colors, ThemeData;
+import 'package:vector_math/vector_math.dart' hide Colors;
 
-import 'package:flutter/material.dart';
 import 'dart:math';
-import 'package:vector_math/vector_math.dart';
+
 
 const Color backgroundColor2 = Color(0xFF17203A);
 const Color backgroundColorLight = Color(0xFFF2F6FF);
@@ -11,12 +12,12 @@ const Color shadowColorLight = Color(0xFF4A5367);
 const Color shadowColorDark = Color.fromARGB(255, 29, 0, 0);
 
 
-const String EMERGENCY_VEHICLE_ID = "219";
+const String EMERGENCY_VEHICLE_ID = "48";
 
 const int PREVIUOS_POSITION_COUNT = 50;
-const int BUFFER_SIZE = 10;
+const int BUFFER_SIZE = 5;
 
-Directory outputdir = new Directory("E:FYP\Test Data\test.txt");
+Directory outputdir = new Directory("E:\FYP\data\est.txt");
 
 
 
@@ -119,7 +120,7 @@ String inFrontBehind(double lonH1, double latH1, double lonX1, double latX1,doub
 
 
   if (X1_H1 < X2_H1) {
-    if (H2_H1 < X2_H1 && X2_X1 > X1_H1) {    // second constrain only due to gps inacuracy
+    if (H2_H1 < X2_H1 && X2_X1 > X1_H1) {    // second constrain only due to gps inacuracy && X2_X1 > X1_H1
       print('infront');
       return ("in front");
     } else {
@@ -171,4 +172,20 @@ String accidentAheadAlert(double Heading_H, double Heading_X, double lonH1, doub
     }
   }
   return "";
+}
+
+
+
+class ThemeClass{
+ 
+  static ThemeData lightTheme = ThemeData(
+    scaffoldBackgroundColor: Colors.white,
+    
+    
+  );
+ 
+  static ThemeData darkTheme = ThemeData(
+    scaffoldBackgroundColor: Colors.black,
+    
+  );
 }
