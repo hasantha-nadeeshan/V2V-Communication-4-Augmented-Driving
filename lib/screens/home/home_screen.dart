@@ -174,11 +174,14 @@ class _HomeScreenState extends State<HomeScreen> {
                         elevation: 12.0,
                         textStyle: const TextStyle(
                           color: Colors.white,
-                          fontSize: 20.0,
+                          fontSize: 30.0,
                           fontWeight: FontWeight.bold,
                           )),
                         
-                    child: const Text('SAFE MODE'),
+                    child: Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: const Text('SAFE MODE'),
+                    ),
                   ),
               ),
               const SizedBox(height: 50),
@@ -186,14 +189,39 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text("spd"),
+                    Text("spd",
+                      style: TextStyle(
+                        color: Colors.white,
+                      ),
+                    ),
                     const SizedBox(width: 30),
-                    Text("65"),
-                    Text("limit")
+                    Text("65",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 80.0,
+                        fontWeight: FontWeight.bold
+                      ),
+                    ),
+                    const SizedBox(width:30),
+                    Text("limit",
+                      style: TextStyle(
+                        color: Colors.white,
+                      ),
+                    ),
                   ],
                 ),
-              )
+              ),
+              Center(
+                
+                  child: Text("Kmph",
+                      style: TextStyle(
+                        fontSize: 15.0,
+                        color: Colors.white,
+                      ),
+                    ),
+                ),
               
+                showEmergency ? emergencyAlertShow() : Text(''),
 
               
              

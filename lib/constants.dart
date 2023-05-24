@@ -120,28 +120,24 @@ String inFrontBehind(double lonH1, double latH1, double lonX1, double latX1,doub
 
 
   if (X1_H1 < X2_H1) {
-    if (H2_H1 < X2_H1 && X2_X1 > X1_H1) {    // second constrain only due to gps inacuracy && X2_X1 > X1_H1
-      print('infront');
+    if (H2_H1 < X2_H1 && X2_X1 > X1_H1) {    // second constrain only due to gps inacuracy
       return ("in front");
     } else {
-      print('behind');
       return ("behind");
     }
   } else {
     if (H2_H1 < X2_H1) {
       if (H2_X1 <X2_X1) {
-        print('infront');
         return ("in front");
       } else {
-        print('behind');
         return ("behind");
       }
     } else {
-      print('behind');
       return ("behind");
     }
   }
 }
+
 
 int emgcount =0;
  int noemgcount =0;
