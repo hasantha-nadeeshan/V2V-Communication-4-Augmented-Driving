@@ -12,7 +12,7 @@ const Color shadowColorLight = Color(0xFF4A5367);
 const Color shadowColorDark = Color.fromARGB(255, 29, 0, 0);
 
 
-const String EMERGENCY_VEHICLE_ID = "48";
+const String EMERGENCY_VEHICLE_ID = "197";
 
 const int PREVIUOS_POSITION_COUNT = 50;
 const int BUFFER_SIZE = 5;
@@ -110,30 +110,49 @@ String separateLanes(double headingX, double headingH) {
 //////////////////////////////////////////////////// to identify vehicles which are in front and behind in the same lane //////////////////////////////////////////////
 
 //////////////////////////////////////////////////// to identify vehicles which are in front and behind in the SAME lane //////////////////////////////////////////////
+String prev_state="";
+String inFrontBehind(double lonH1, double latH1, double lonX1, double latX1, double lonH2, double latH2, double lonX2, double latX2) {
+  double X1_H1 = distance(lonH1, latH1, lonX1, latX1);
+  double X2_H1 = distance(lonH1, latH1, lonX2, latX2);
+  double H2_H1 = distance(lonH2, latH2, lonH1, latH1);
+  double X2_X1 = distance(lonX2, latX2, lonX1, latX1);
+  double H2_X1 = distance(lonH2, latH2, lonX1, latX1);
 
-String inFrontBehind(double lonH1, double latH1, double lonX1, double latX1,double lonH2, double latH2, double lonX2, double latX2) {
-  double X1_H1 = distance(lonH1, latH1, lonX1, latX1); // previous distance between remote and host vehicles
-  double X2_H1 = distance(lonH1, latH1, lonX2, latX2); // distance between remote vehicle's current position and remote vehicle's previous position
-  double H2_H1 = distance(lonH2, latH2, lonH1, latH1); // distance between host vehicle's current position and its previous position
-  double X2_X1 = distance(lonX2, latX2, lonX1, latX1); // distance between remote vehicle's current position and its previous position
-  double H2_X1 = distance(lonH2, latH2, lonX1, latX1); // distance between host vehicle's current position and remote vehicle's previous position
-
-
-  if (X1_H1 < X2_H1) {
-    if (H2_H1 < X2_H1 && X2_X1 > X1_H1) {    // second constrain only due to gps inacuracy
-      return ("in front");
+  if ((X2_H1 - X1_H1).abs() < 0.5) {
+    X2_H1 = X1_H1;
+  }
+  if (X2_H1 > X1_H1) {
+    if (H2_H1 > X2_H1) {
+      prev_state = "behind";
+      print('behind');
+      return "behind";
     } else {
-      return ("behind");
+      prev_state = "infront";
+      print('infront');
+      return "infront";
+    }
+  } else if (X2_H1 == X1_H1) {
+    if (H2_X1 > X1_H1) {
+      prev_state = "behind";
+      print('behind');
+      return "behind";
+    } else if (H2_X1 < X1_H1) {
+      prev_state = "infront";
+      print('infront');
+      return "infront";
+    } else {
+      print(prev_state);
+      return prev_state;
     }
   } else {
-    if (H2_H1 < X2_H1) {
-      if (H2_X1 <X2_X1) {
-        return ("in front");
-      } else {
-        return ("behind");
-      }
+    if (X2_X1 < H2_X1) {
+      prev_state = "behind";
+      print('behind');
+      return "behind";
     } else {
-      return ("behind");
+      prev_state = "infront";
+      print('infront');
+      return "infront";
     }
   }
 }

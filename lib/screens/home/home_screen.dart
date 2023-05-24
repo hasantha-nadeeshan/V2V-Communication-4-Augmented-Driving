@@ -21,7 +21,7 @@ class _HomeScreenState extends State<HomeScreen> {
   String _recmsg ="";
   String emgon="";
   String accion="";
-  bool showEmergency = true;
+  bool showEmergency = false;
   bool showAccident = false;
   bool isUpdating = false;
   int count = 0;
@@ -84,7 +84,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   prevnearbydata.put(EMERGENCY_VEHICLE_ID, _emgprevdataToList.join(','));
                   count =0;
                 }
-                if(_data[0]!='my' && !isUpdating){      //When emmergency data comes ans not updating loop
+                if(_data[0]!='my' && !isUpdating){      //When emmergency data comes and not updating loop
                   nearby.put(_data[0],_message);
                   _mydataToList = mydata.get("my")?.split(',').toList() ?? [];
                   _emgdataToList = nearby.get(_data[0])?.split(',').toList() ?? [];
@@ -180,7 +180,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         
                     child: Padding(
                       padding: const EdgeInsets.all(10.0),
-                      child: const Text('SAFE MODE'),
+                      child:  Text(_message),
                     ),
                   ),
               ),
@@ -189,10 +189,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text("spd",
-                      style: TextStyle(
-                        color: Colors.white,
-                      ),
+                    Icon(
+                      Icons.speed_outlined,
+                      color: Colors.white,
+                      size: 30,
                     ),
                     const SizedBox(width: 30),
                     Text("65",
