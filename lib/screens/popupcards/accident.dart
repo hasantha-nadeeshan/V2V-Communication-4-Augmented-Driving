@@ -9,7 +9,7 @@ class accidentAlertShow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-            color: backgroundColorDark,
+            
             child: Center(  
               child: 
                 AlertDialog(

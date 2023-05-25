@@ -103,9 +103,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     print(_myprevdataToList);
                     print(_emgdataToList);
                     print(_emgprevdataToList);
-                    if(relativeDistance>10){
+                    if(relativeDistance>6){
                       emgon = emergencyAlert(
-                      double.parse(_mydataToList[3]), double.parse(_emgdataToList[4]),
+                      double.parse(_mydataToList[4]), double.parse(_emgdataToList[3]),
                       double.parse(_myprevdataToList[1]), double.parse(_myprevdataToList[2]),
                       double.parse(_emgprevdataToList[1]), double.parse(_emgprevdataToList[2]),
                       double.parse(_mydataToList[1]), double.parse(_mydataToList[2]),
@@ -124,10 +124,11 @@ class _HomeScreenState extends State<HomeScreen> {
                       if(currentEmgState.length == BUFFER_SIZE+1){
                         currentEmgState.clear();
                       }
-                      if(currentEmgState.length == BUFFER_SIZE+1){
+                      if(currentAcciState.length == BUFFER_SIZE+1){
                         currentAcciState.clear();
                       }
                       print(currentEmgState);
+                      print(currentAcciState);
                       emggcount = currentEmgState.where((item) => item == "emergency").length;
                       noemggcount = currentEmgState.where((item) => item == "no emergency").length;
                       accicount = currentAcciState.where((item) => item == "accident").length;
@@ -246,7 +247,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               
                 showEmergency ? emergencyAlertShow() : Text(''),
-
+                //showAccident ? accidentAlertShow() : Text(''),
                 
              
               

@@ -12,7 +12,7 @@ const Color shadowColorLight = Color(0xFF4A5367);
 const Color shadowColorDark = Color.fromARGB(255, 29, 0, 0);
 
 
-const String EMERGENCY_VEHICLE_ID = "197";
+const String EMERGENCY_VEHICLE_ID = "82";
 
 const int PREVIUOS_POSITION_COUNT = 50;
 const int BUFFER_SIZE = 5;
@@ -94,10 +94,10 @@ double distance(double lon1, double lat1, double lon2 , double lat2) {
 
 ///////////////////////////////////////// to identify vahicles in smae and opposite lanes ///////////////////////////////////////////////
 String separateLanes(double headingX, double headingH) {
-  double headingDifference = (headingH - headingX).abs();
-  double theta = 30; // theta = threshold heading difference
+  double headingDifference = (headingH - headingX);
+  double theta = 45; // theta = threshold heading difference
   
-  if (headingDifference <= theta) {
+  if (headingDifference <= theta && headingDifference <= (theta-360) ){
     return "same";
   } else if ((180 - theta) <= headingDifference && headingDifference <= (180 + theta)) {
     return "opposite";
@@ -118,8 +118,11 @@ String inFrontBehind(double lonH1, double latH1, double lonX1, double latX1, dou
   double X2_X1 = distance(lonX2, latX2, lonX1, latX1);
   double H2_X1 = distance(lonH2, latH2, lonX1, latX1);
 
-  if ((X2_H1 - X1_H1).abs() < 0.5) {
+  if ((X2_H1 - X1_H1).abs() < 0.75) {
     X2_H1 = X1_H1;
+  }
+  if ((H2_X1 - X1_H1).abs() < 0.5) {
+    H2_X1 = X1_H1;
   }
   if (X2_H1 > X1_H1) {
     if (H2_H1 > X2_H1) {
@@ -163,7 +166,7 @@ int emgcount =0;
 
 ///////////////////////////////////////// emergency vehicle sample //////////////////////////////////////////////////
 String emergencyAlert(double Heading_H, double Heading_X, double lonH1, double latH1, double lonX1, double latX1, double lonH2, double latH2, double lonX2, double latX2) {
-   if (separateLanes(Heading_X, Heading_H) == "same") {
+  // if (separateLanes(Heading_X, Heading_H) == "same") {
     if (inFrontBehind(lonH1, latH1, lonX1, latX1, lonH2, latH2, lonX2, latX2) == "behind") {
       
       return "emergency";
@@ -173,12 +176,12 @@ String emergencyAlert(double Heading_H, double Heading_X, double lonH1, double l
     return "no emergency";
     }
   }
-   else{
+//    else{
      
-    print("heading problem");
-    return "no emergency ";
-  }
-}
+//     print("heading problem");
+//     return "no emergency ";
+//   }
+// }
 ///////////////////////////////////////// accident ahead sample //////////////////////////////////////////////////
 String accidentAheadAlert(double Heading_H, double Heading_X, double lonH1, double latH1, double lonX1, double latX1, double lonH2, double latH2, double lonX2, double latX2, double spdX2) {
   if (separateLanes(Heading_X, Heading_H) == "same") {
