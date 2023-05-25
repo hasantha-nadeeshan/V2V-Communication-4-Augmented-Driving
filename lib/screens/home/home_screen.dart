@@ -21,6 +21,7 @@ class _HomeScreenState extends State<HomeScreen> {
   String _recmsg ="";
   String emgon="";
   String accion="";
+  String mySpeed = '0';
   bool showEmergency = false;
   bool showAccident = false;
   bool isUpdating = false;
@@ -30,10 +31,13 @@ class _HomeScreenState extends State<HomeScreen> {
   List<String> _myprevdataToList = [];
   List<String> _emgdataToList = [];
   List<String>_emgprevdataToList = [];
-  List<String> currentState =[];
+  List<String> currentEmgState =[];
+  List<String> currentAcciState = [];
   double relativeDistance = 0;
   int miliseconds = 0;
   int emggcount =0;
+  int accicount =0;
+  int noaccicount =0;
   int noemggcount=0;
 
   File file = File(outputdir.path);
@@ -74,6 +78,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   mydata.put("my",_message);    //adding to a box
                   count= count +1;              //increase counter
                   _mydataToList = mydata.get("my")?.split(',').toList() ?? [];
+                  mySpeed = _mydataToList[3];
                 }
 
                 if(count == PREVIUOS_POSITION_COUNT){
@@ -114,21 +119,40 @@ class _HomeScreenState extends State<HomeScreen> {
                       double.parse(_emgdataToList[1]), double.parse(_emgdataToList[2]),
                       double.parse(_emgdataToList[4])
                       );
-                      currentState.add(emgon);
-                      if(currentState.length == BUFFER_SIZE+1){
-                        currentState.clear();
+                      currentEmgState.add(emgon);
+                      currentAcciState.add(accion);
+                      if(currentEmgState.length == BUFFER_SIZE+1){
+                        currentEmgState.clear();
                       }
-                      print(currentState);
-                      emggcount = currentState.where((item) => item == "emergency").length;
-                      noemggcount = currentState.where((item) => item == "no emergency").length;
+                      if(currentEmgState.length == BUFFER_SIZE+1){
+                        currentAcciState.clear();
+                      }
+                      print(currentEmgState);
+                      emggcount = currentEmgState.where((item) => item == "emergency").length;
+                      noemggcount = currentEmgState.where((item) => item == "no emergency").length;
+                      accicount = currentAcciState.where((item) => item == "accident").length;
+                      noaccicount = currentEmgState.where((item) => item == "no accident").length;
 
-                      if(currentState.length == BUFFER_SIZE && emggcount >= noemggcount){
+                      if(currentEmgState.length == BUFFER_SIZE && emggcount >= noemggcount){
                         print("Emergency");
 
                         showEmergency =true;
+                        showAccident = false;
                       }
-                      else if(currentState.length == BUFFER_SIZE && emggcount < noemggcount){
+                      if(currentAcciState.length == BUFFER_SIZE && accicount >= noaccicount){
+                        print('accident');
+                        showAccident =true;
                         showEmergency = false;
+                      }
+                    
+                      if(currentEmgState.length == BUFFER_SIZE && emggcount < noemggcount){
+                        showEmergency = false;
+                        currentEmgState.clear();
+                      }
+
+                      if(currentAcciState.length == BUFFER_SIZE && accicount < noaccicount){
+                        showAccident = false;
+                        currentAcciState.clear();
                       }
                     }
                     
@@ -195,7 +219,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       size: 30,
                     ),
                     const SizedBox(width: 30),
-                    Text("65",
+                    Text(mySpeed,
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 80.0,
@@ -223,7 +247,7 @@ class _HomeScreenState extends State<HomeScreen> {
               
                 showEmergency ? emergencyAlertShow() : Text(''),
 
-              
+                
              
               
               

@@ -163,22 +163,22 @@ int emgcount =0;
 
 ///////////////////////////////////////// emergency vehicle sample //////////////////////////////////////////////////
 String emergencyAlert(double Heading_H, double Heading_X, double lonH1, double latH1, double lonX1, double latX1, double lonH2, double latH2, double lonX2, double latX2) {
-  // if (separateLanes(Heading_X, Heading_H) == "same") {
+   if (separateLanes(Heading_X, Heading_H) == "same") {
     if (inFrontBehind(lonH1, latH1, lonX1, latX1, lonH2, latH2, lonX2, latX2) == "behind") {
-      emgcount=emgcount+1;
+      
       return "emergency";
     }
     else{
-      noemgcount = noemgcount+1;
+      
     return "no emergency";
     }
   }
-  // else{
-  //   noemgcount= noemgcount+1;
-  //   print("heading problem");
-  //   return "no emergency ";
-  // }
-//}
+   else{
+     
+    print("heading problem");
+    return "no emergency ";
+  }
+}
 ///////////////////////////////////////// accident ahead sample //////////////////////////////////////////////////
 String accidentAheadAlert(double Heading_H, double Heading_X, double lonH1, double latH1, double lonX1, double latX1, double lonH2, double latH2, double lonX2, double latX2, double spdX2) {
   if (separateLanes(Heading_X, Heading_H) == "same") {
@@ -186,7 +186,7 @@ String accidentAheadAlert(double Heading_H, double Heading_X, double lonH1, doub
       return "accident";
     }
   }
-  return "";
+  return "no accident";
 }
 
 
