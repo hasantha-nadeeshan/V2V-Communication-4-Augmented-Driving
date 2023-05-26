@@ -94,17 +94,18 @@ double distance(double lon1, double lat1, double lon2 , double lat2) {
 
 ///////////////////////////////////////// to identify vahicles in smae and opposite lanes ///////////////////////////////////////////////
 String separateLanes(double headingX, double headingH) {
-  double headingDifference = (headingH - headingX);
+  double headingDifference = (headingX - headingH).abs();
   double theta = 45; // theta = threshold heading difference
-  
-  if (headingDifference <= theta && headingDifference <= (theta-360) ){
+
+  if ((headingDifference < theta)|| (((360 - theta) < headingDifference) && (headingDifference < 360))) {
     return "same";
-  } else if ((180 - theta) <= headingDifference && headingDifference <= (180 + theta)) {
+  } else if (((180 - theta) < headingDifference) && (headingDifference < (180 + theta))) {
     return "opposite";
   } else {
-    return "discard"; // irrelevant vehicles, e.g. at crossings, junctions
+    return "discard";
   }
 }
+ 
 
 
 //////////////////////////////////////////////////// to identify vehicles which are in front and behind in the same lane //////////////////////////////////////////////
@@ -206,4 +207,52 @@ class ThemeClass{
     scaffoldBackgroundColor: Colors.black,
     
   );
+}
+
+
+String prev_state_diff_lane = '';
+
+String inFrontBehindDifferent(
+    double lonH1,
+    double latH1,
+    double lonX1,
+    double latX1,
+    double lonH2,
+    double latH2,
+    double lonX2,
+    double latX2) {
+  double H1_X1 = distance(lonH1, latH1, lonX1, latX1);
+  double X2_H2 = distance(lonH2, latH2, lonX2, latX2);
+  double H2_H1 = distance(lonH2, latH2, lonH1, latH1);
+  double X2_H1 = distance(lonX2, latX2, lonH1, latH1);
+  double X2_X1 = distance(lonX2, latX2, lonX1, latX1);
+  double H2_X1 = distance(lonH2, latH2, lonX1, latX1);
+  
+  if ((X2_H2 - H1_X1).abs() < 0.5) {
+    X2_H2 = H1_X1;
+  }
+  
+  if (X2_H2 > H1_X1) {
+    print('behind');
+    prev_state_diff_lane = 'behind';
+    return 'behind';
+  } else if (X2_H2 < H1_X1) {
+    if (H2_H1 < H1_X1) {
+      if (X2_X1 > H2_X1) {
+        print('behind');
+        prev_state_diff_lane = 'behind';
+        return 'behind';
+      } else {
+        print('in front');
+        prev_state_diff_lane = 'infront';
+        return 'infront';
+      }
+    } else {
+      print('behind');
+      prev_state_diff_lane = 'behind';
+      return 'behind';
+    }
+  } else {
+    return prev_state_diff_lane;
+  }
 }
