@@ -17,6 +17,8 @@ const String EMERGENCY_VEHICLE_ID = "197";
 const int PREVIUOS_POSITION_COUNT = 50;
 const int BUFFER_SIZE = 5;
 
+const double WIDTH_OF_ROAD = 3.75;
+
 Directory outputdir = new Directory("E:\FYP\data\est.txt");
 
 
@@ -187,6 +189,66 @@ String accidentAheadAlert(double Heading_H, double Heading_X, double lonH1, doub
     }
   }
   return "";
+}
+
+/////////////////////////////////to identify vehicles which are in front and behind in the DIFFERENT lanes /////////////////////////////////
+bool inFrontBehindDifferent(double lonH1, double latH1, double lonX1, double latX1, double lonH2, double latH2, double lonX2, double latX2) {
+  double X1_H1 = distance(lonH1, latH1, lonX1, latX1);
+  double X2_H2 = distance(lonH2, latH2, lonX2, latX2);
+  double H2_H1 = distance(lonH2, latH2, lonH1, latH1);
+  double X2_H1 = distance(lonX2, latX2, lonH1, latH1);
+
+  if (X2_H2 > X1_H1) {
+    return false; // false = behind
+  } else {
+    if (H2_H1 > X2_H1) {
+      return false; // behind
+    } else {
+      return true; // in front
+    }
+  }
+}
+
+///////////////////////////////////////// Right Turn sample //////////////////////////////////////////////////
+///for the vehicle which is expecting to do a right turn///
+bool possibleToRightTurn(double latH1, double lonH1, double latH2, double lonH2, double spdH2, double latX1, double lonX1, double latX2, double lonX2, double spdX2) {
+  // Assumes the vehicle expecting to turn right is at a velocity of 0ms-1 at the junction.
+  if (inFrontBehindDifferent(lonH1, latH1, lonX1, latX1, lonH2, latH2, lonX2, latX2)) {
+    spdH2 = 0;
+    
+    double d = pow(spdX2, 2) / (2 * (distance(lonH2, latH2, lonX2, latX2) - (WIDTH_OF_ROAD / 2)));
+    double dMax = 4.6; // https://www.jsheld.com/insights/articles/a-naturalistic-study-of-vehicle-acceleration-and-deceleration-at-an-intersection
+    if (d <= dMax) {
+      print("Safer for a right turn");
+      return true;
+    } else {
+      print("Wait more for a right turn");
+      return false;
+    }
+  } else {
+    print("Wait more for a right turn");
+    return false;
+  }
+}
+
+///for the vehicle which is allowing oncoming to do a right turn///
+bool possibleToDecelerate(double latH1, double lonH1, double latH2, double lonH2, double spdH2, double latX1, double lonX1, double latX2, double lonX2, double spdX2) {
+  // Assumes the vehicle expecting to turn right is at a velocity of 0ms-1 at the junction.
+  if (inFrontBehindDifferent(lonH1, latH1, lonX1, latX1, lonH2, latH2, lonX2, latX2)) {
+    spdX2 = 0;
+    double d = pow(spdH2, 2) / (2 * (distance(lonH2, latH2, lonX2, latX2) - (WIDTH_OF_ROAD / 2)));
+    double dMax = 4.6; // https://www.jsheld.com/insights/articles/a-naturalistic-study-of-vehicle-acceleration-and-deceleration-at-an-intersection
+    if (d <= dMax) {
+      print("Decelerate and stop at the intersection");
+      return true;
+    } else {
+      print("Proceed");
+      return false;
+    }
+  } else {
+    print("Proceed");
+    return false;
+  }
 }
 
 

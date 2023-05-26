@@ -18,19 +18,16 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   String _message = "Waiting for messages...";
-  String _recmsg ="";
-  String emgon="";
-  String accion="";
-  bool showEmergency = false;
-  bool showAccident = false;
   bool isUpdating = false;
   int count = 0;
   List<String> _data=[];
   List<String> _mydataToList = [];
   List<String> _myprevdataToList = [];
-  List<String> _emgdataToList = [];
-  List<String>_emgprevdataToList = [];
+  List<String> _neardataToList = [];
+  List<String>_nearprevdataToList = [];
   List<String> currentState =[];
+  List<String> nearVehicles =[];
+
   double relativeDistance = 0;
   int miliseconds = 0;
   int emggcount =0;
@@ -66,7 +63,6 @@ class _HomeScreenState extends State<HomeScreen> {
             print("looking for packets");
             if (datagram != null) {
               setState(() {
-                DateTime now = DateTime.now();
                 _message = "${String.fromCharCodes(datagram.data)},${DateTime.now().millisecondsSinceEpoch}";
                 _data = splitString(_message);
 
@@ -75,68 +71,36 @@ class _HomeScreenState extends State<HomeScreen> {
                   count= count +1;              //increase counter
                   _mydataToList = mydata.get("my")?.split(',').toList() ?? [];
                 }
+                if(_data[0]!="my"){
+                  if(nearVehicles.contains(_data[0])){
+                    nearVehicles.add(_data[0]);
+                  }
+                  nearby.put(_data[0],_message);
+                }
 
                 if(count == PREVIUOS_POSITION_COUNT){
                   isUpdating = true;
                   _myprevdataToList = mydata.get('my')?.split(',').toList() ?? [];
-                  _emgprevdataToList = nearby.get(EMERGENCY_VEHICLE_ID)?.split(',').toList() ?? [];
                   prevmydata.put('my', _myprevdataToList.join(','));
-                  prevnearbydata.put(EMERGENCY_VEHICLE_ID, _emgprevdataToList.join(','));
+                  prevnearbydata.clear();
+                  for(var key in nearby.keys){
+                    _nearprevdataToList = nearby.get(key)?.split(',').toList() ?? [];
+                    prevnearbydata.put(key, _nearprevdataToList.join(',') );
+                  }
                   count =0;
                 }
-                if(_data[0]!='my' && !isUpdating){      //When emmergency data comes and not updating loop
-                  nearby.put(_data[0],_message);
-                  _mydataToList = mydata.get("my")?.split(',').toList() ?? [];
-                  _emgdataToList = nearby.get(_data[0])?.split(',').toList() ?? [];
-                  _myprevdataToList = prevmydata.get('my')?.split(',').toList() ?? [];
-                  _emgprevdataToList = prevnearbydata.get(_data[0])?.split(',').toList() ?? [];
-                  relativeDistance = distance(double.parse(_mydataToList[1]), double.parse(_mydataToList[2]), double.parse(_emgdataToList[1]), double.parse(_emgdataToList[2]));
-                  print("distance , ${relativeDistance.toString()}");
-
-                  if(_emgprevdataToList.isNotEmpty && _myprevdataToList.isNotEmpty){
-                    print(_mydataToList);
-                    print(_myprevdataToList);
-                    print(_emgdataToList);
-                    print(_emgprevdataToList);
-                    if(relativeDistance>10){
-                      emgon = emergencyAlert(
-                      double.parse(_mydataToList[3]), double.parse(_emgdataToList[4]),
-                      double.parse(_myprevdataToList[1]), double.parse(_myprevdataToList[2]),
-                      double.parse(_emgprevdataToList[1]), double.parse(_emgprevdataToList[2]),
-                      double.parse(_mydataToList[1]), double.parse(_mydataToList[2]),
-                      double.parse(_emgdataToList[1]), double.parse(_emgdataToList[2])
-                      );
-                      accion = accidentAheadAlert(
-                      double.parse(_mydataToList[3]), double.parse(_emgdataToList[4]),
-                      double.parse(_myprevdataToList[1]), double.parse(_myprevdataToList[2]),
-                      double.parse(_emgprevdataToList[1]), double.parse(_emgprevdataToList[2]),
-                      double.parse(_mydataToList[1]), double.parse(_mydataToList[2]),
-                      double.parse(_emgdataToList[1]), double.parse(_emgdataToList[2]),
-                      double.parse(_emgdataToList[4])
-                      );
-                      currentState.add(emgon);
-                      if(currentState.length == BUFFER_SIZE+1){
-                        currentState.clear();
-                      }
-                      print(currentState);
-                      emggcount = currentState.where((item) => item == "emergency").length;
-                      noemggcount = currentState.where((item) => item == "no emergency").length;
-
-                      if(currentState.length == BUFFER_SIZE && emggcount >= noemggcount){
-                        print("Emergency");
-
-                        showEmergency =true;
-                      }
-                      else if(currentState.length == BUFFER_SIZE && emggcount < noemggcount){
-                        showEmergency = false;
-                      }
-                    }
-                    
-                    
-                    print("************Done**********");  
+                if(double.parse(_mydataToList[3])*0.1 <= 10){   //now going to take a turn
+                  String nearKey ='';
+                  relativeDistance= 0;
+                  List<String> _tempneardatalist=[];
+                  for(var key in nearby.keys){
+                    _tempneardatalist = nearby.get(key)?.split(',').toList() ?? [];
+                    relativeDistance = distance(double.parse(_mydataToList[1]), double.parse(_mydataToList[2]), );
                   }
-                
                 }
+                //if other side && velo <10 someone gonna turn 
+
+                
                 isUpdating = false;
             
               });
@@ -221,7 +185,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                 ),
               
-                showEmergency ? emergencyAlertShow() : Text(''),
+                
 
               
              
@@ -233,4 +197,9 @@ class _HomeScreenState extends State<HomeScreen> {
       );
     
   }
+}
+
+
+void removeExpiredElements(String name){
+
 }
