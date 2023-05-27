@@ -78,7 +78,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   mydata.put("my",_message);    //adding to a box
                   count= count +1;              //increase counter
                   _mydataToList = mydata.get("my")?.split(',').toList() ?? [];
-                  mySpeed = _mydataToList[3];
+                  mySpeed = (double.parse(_mydataToList[3])*0.1).toInt().toString();
                 }
 
                 if(count == PREVIUOS_POSITION_COUNT){
@@ -132,7 +132,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       emggcount = currentEmgState.where((item) => item == "emergency").length;
                       noemggcount = currentEmgState.where((item) => item == "no emergency").length;
                       accicount = currentAcciState.where((item) => item == "accident").length;
-                      noaccicount = currentEmgState.where((item) => item == "no accident").length;
+                      noaccicount = currentAcciState.where((item) => item == "no accident").length;
 
                       if(currentEmgState.length == BUFFER_SIZE && emggcount >= noemggcount){
                         print("Emergency");
@@ -152,6 +152,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       }
 
                       if(currentAcciState.length == BUFFER_SIZE && accicount < noaccicount){
+                        print('no accident');
                         showAccident = false;
                         currentAcciState.clear();
                       }
@@ -247,7 +248,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               
                 showEmergency ? emergencyAlertShow() : Text(''),
-                //showAccident ? accidentAlertShow() : Text(''),
+                showAccident ? accidentAlertShow() : Text(''),
                 
              
               

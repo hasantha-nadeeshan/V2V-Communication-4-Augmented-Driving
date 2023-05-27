@@ -12,7 +12,7 @@ const Color shadowColorLight = Color(0xFF4A5367);
 const Color shadowColorDark = Color.fromARGB(255, 29, 0, 0);
 
 
-const String EMERGENCY_VEHICLE_ID = "82";
+const String EMERGENCY_VEHICLE_ID = "";
 
 const int PREVIUOS_POSITION_COUNT = 50;
 const int BUFFER_SIZE = 5;
@@ -167,7 +167,7 @@ int emgcount =0;
 
 ///////////////////////////////////////// emergency vehicle sample //////////////////////////////////////////////////
 String emergencyAlert(double Heading_H, double Heading_X, double lonH1, double latH1, double lonX1, double latX1, double lonH2, double latH2, double lonX2, double latX2) {
-  // if (separateLanes(Heading_X, Heading_H) == "same") {
+   if (separateLanes(Heading_X, Heading_H) == "same") {
     if (inFrontBehind(lonH1, latH1, lonX1, latX1, lonH2, latH2, lonX2, latX2) == "behind") {
       
       return "emergency";
@@ -177,12 +177,12 @@ String emergencyAlert(double Heading_H, double Heading_X, double lonH1, double l
     return "no emergency";
     }
   }
-//    else{
+   else{
      
-//     print("heading problem");
-//     return "no emergency ";
-//   }
-// }
+    print("heading problem");
+    return "no emergency";
+  }
+}
 ///////////////////////////////////////// accident ahead sample //////////////////////////////////////////////////
 String accidentAheadAlert(double Heading_H, double Heading_X, double lonH1, double latH1, double lonX1, double latX1, double lonH2, double latH2, double lonX2, double latX2, double spdX2) {
   if (separateLanes(Heading_X, Heading_H) == "same") {
