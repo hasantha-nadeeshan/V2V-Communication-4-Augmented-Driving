@@ -33,6 +33,8 @@ class _HomeScreenState extends State<HomeScreen> {
   int emggcount =0;
   int noemggcount=0;
 
+  bool isPossibleToTurn = false;
+
   File file = File(outputdir.path);
 
   late Box<String> mydata;
@@ -90,13 +92,40 @@ class _HomeScreenState extends State<HomeScreen> {
                   count =0;
                 }
                 if(double.parse(_mydataToList[3])*0.1 <= 10){   //now going to take a turn
-                  String nearKey ='';
-                  relativeDistance= 0;
-                  List<String> _tempneardatalist=[];
-                  for(var key in nearby.keys){
-                    _tempneardatalist = nearby.get(key)?.split(',').toList() ?? [];
-                    relativeDistance = distance(double.parse(_mydataToList[1]), double.parse(_mydataToList[2]), );
+                  if(nearVehicles.isEmpty){
+                    print("No near by vehicales can turn");
+                    isPossibleToTurn = true;
                   }
+                  else{
+                    print("we have near by vehicalse");
+                    String nearKey ='';
+                    double minDistance= double.infinity;
+                    double tempDistance = 0;
+                    List<String> _tempneardatalist=[];
+                    for(var key in nearby.keys){
+                      _mydataToList = mydata.get("my")?.split(',').toList() ?? [];
+                      _tempneardatalist = nearby.get(key)?.split(',').toList() ?? [];
+                      if(separateLanes(double.parse(_mydataToList[4]), double.parse(_tempneardatalist[3]))=="same"){     ///checking different lanes
+                        print("heading is different, different lanes discard");
+                        print(_mydataToList.join(','));
+                        print(_tempneardatalist.join(','));
+                        print("***************");
+                      }
+                      else{
+                        tempDistance = distance(double.parse(_mydataToList[1]), double.parse(_mydataToList[2]), double.parse(_tempneardatalist[1]), double.parse(_tempneardatalist[2]));
+                        
+                        if(tempDistance< minDistance){
+                          minDistance = tempDistance;
+                          nearKey = key;
+                        }
+                      }
+                     
+                      print("nearby key "+nearKey);
+                      print()
+                      
+                    }
+                  }
+                
                 }
                 //if other side && velo <10 someone gonna turn 
 
