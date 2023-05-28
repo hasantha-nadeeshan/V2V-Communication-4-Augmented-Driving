@@ -112,16 +112,22 @@ class _HomeScreenState extends State<HomeScreen> {
                         print("***************");
                       }
                       else{
-                        tempDistance = distance(double.parse(_mydataToList[1]), double.parse(_mydataToList[2]), double.parse(_tempneardatalist[1]), double.parse(_tempneardatalist[2]));
+                        if(prevnearbydata.containsKey(key)){
+                          List<String> _tempnearprevdatalist = prevnearbydata.get(key)?.split(',').toList()??[];
+                          if(inFrontBehind(double.parse(_myprevdataToList[1]), double.parse(_myprevdataToList[2]), double.parse(_tempnearprevdatalist[1]),double.parse( _tempnearprevdatalist[2]), double.parse(_mydataToList[1]), double.parse(_mydataToList[2]), double.parse(_tempneardatalist[1]),double.parse( _tempneardatalist[2]))=='infront'){
+                            tempDistance = distance(double.parse(_mydataToList[1]), double.parse(_mydataToList[2]), double.parse(_tempneardatalist[1]), double.parse(_tempneardatalist[2]));
                         
-                        if(tempDistance< minDistance){
-                          minDistance = tempDistance;
-                          nearKey = key;
+                            if(tempDistance< minDistance){
+                              minDistance = tempDistance;
+                              nearKey = key;
+                            }
+                          }
                         }
+                        
                       }
                      
                       print("nearby key "+nearKey);
-                      print()
+                      
                       
                     }
                   }

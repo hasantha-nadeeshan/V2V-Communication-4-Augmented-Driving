@@ -195,20 +195,62 @@ String accidentAheadAlert(double Heading_H, double Heading_X, double lonH1, doub
   return "";
 }
 
-/////////////////////////////////to identify vehicles which are in front and behind in the DIFFERENT lanes /////////////////////////////////
-bool inFrontBehindDifferent(double lonH1, double latH1, double lonX1,double latX1, double lonH2, double latH2, double lonX2, double latX2) {
-  double X1_H1 = distance(lonH1, latH1, lonX1, latX1);
+String prev_state_diff_lane = '';
+
+String inFrontBehindDifferent(
+    double lonH1,
+    double latH1,
+    double lonX1,
+    double latX1,
+    double lonH2,
+    double latH2,
+    double lonX2,
+    double latX2) {
+  double H1_X1 = distance(lonH1, latH1, lonX1, latX1);
   double X2_H2 = distance(lonH2, latH2, lonX2, latX2);
   double H2_H1 = distance(lonH2, latH2, lonH1, latH1);
-  double X2_H1 = distance(lonX2, latX2, lonH1, latH1);
 
-  if (X2_H2 > X1_H1) {
-    return false; // false = behind
-  } else {
-    if (H2_H1 > X2_H1) {
-      return false; // behind
+  double X2_X1 = distance(lonX2, latX2, lonX1, latX1);
+  double H2_X1 = distance(lonH2, latH2, lonX1, latX1);
+  
+  if ((X2_H2 - H1_X1).abs() < 0.5) {
+    X2_H2 = H1_X1;
+  }
+  
+  if  (X2_X1< 0.5) {
+    X2_X1 = 0;
+  }
+
+
+  
+  if (X2_H2 > H1_X1) {
+    print('behind');
+    prev_state_diff_lane = 'behind';
+    return 'behind';
+  } else if (X2_H2 < H1_X1) {
+    if (H2_H1 < H1_X1) {
+      if (X2_X1 > H2_X1) {
+        print('behind');
+        prev_state_diff_lane = 'behind';
+        return 'behind';
+      } else {
+        print('in front');
+        prev_state_diff_lane = 'infront';
+        return 'infront';
+      }
     } else {
-      return true; // in front
+      print('behind');
+      prev_state_diff_lane = 'behind';
+      return 'behind';
+    }
+  } else {
+    if ((X2_X1 >= H2_X1) || (H2_H1 > H1_X1)) {    //exception. can be romoved.
+    print("behind");
+    prev_state_diff_lane = "behind";
+    return "behind";
+    } else {
+    print(prev_state_diff_lane);
+    return prev_state_diff_lane;
     }
   }
 }
@@ -228,7 +270,7 @@ bool possibleToRightTurn(
     double spdX2) {
   // Assumes the vehicle expecting to turn right is at a velocity of 0ms-1 at the junction.
   if (inFrontBehindDifferent(
-      lonH1, latH1, lonX1, latX1, lonH2, latH2, lonX2, latX2)) {
+      lonH1, latH1, lonX1, latX1, lonH2, latH2, lonX2, latX2)=='infront') {
     spdH2 = 0;
     double widthOfRoad = 3.75; // Data
     double d = pow(spdX2, 2) /
@@ -261,7 +303,7 @@ bool possibleToDecelerate(
     double spdX2) {
   // Assumes the vehicle expecting to turn right is at a velocity of 0ms-1 at the junction.
   if (inFrontBehindDifferent(
-      lonH1, latH1, lonX1, latX1, lonH2, latH2, lonX2, latX2)) {
+      lonH1, latH1, lonX1, latX1, lonH2, latH2, lonX2, latX2)=='infront') {
     spdX2 = 0;
     double widthOfRoad = 3.75; // Data
     double d = pow(spdH2, 2) /
