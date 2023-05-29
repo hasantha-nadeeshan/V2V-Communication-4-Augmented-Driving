@@ -258,23 +258,21 @@ String inFrontBehindDifferent(
 ///////////////////////////////////////// Right Turn sample //////////////////////////////////////////////////
 ///for the vehicle which is expecting to do a right turn///
 bool possibleToRightTurn(
-    double latH1,
     double lonH1,
-    double latH2,
-    double lonH2,
-    double spdH2,
-    double latX1,
+    double latH1,
     double lonX1,
-    double latX2,
+    double latX1, 
+    double lonH2,
+    double latH2,
+    double spdH2,
     double lonX2,
+    double latX2,
     double spdX2) {
   // Assumes the vehicle expecting to turn right is at a velocity of 0ms-1 at the junction.
   if (inFrontBehindDifferent(
       lonH1, latH1, lonX1, latX1, lonH2, latH2, lonX2, latX2)=='infront') {
-    spdH2 = 0;
     double widthOfRoad = 3.75; // Data
-    double d = pow(spdX2, 2) /
-        (2 * (distance(lonH2, latH2, lonX2, latX2) - (widthOfRoad / 2)));
+    double d = pow(spdX2*(1/36), 2) / (2 * (distance(lonH2, latH2, lonX2, latX2) - (widthOfRoad / 2)));
     double dMax =
         4.6; // https://www.jsheld.com/insights/articles/a-naturalistic-study-of-vehicle-acceleration-and-deceleration-at-an-intersection
     if (d <= dMax) {

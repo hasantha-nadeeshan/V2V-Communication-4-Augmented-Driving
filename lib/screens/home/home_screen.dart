@@ -74,24 +74,29 @@ class _HomeScreenState extends State<HomeScreen> {
                   _mydataToList = mydata.get("my")?.split(',').toList() ?? [];
                 }
                 if(_data[0]!="my"){
-                  if(nearVehicles.contains(_data[0])){
+                  print('updating nearby data');
+                  nearby.put(_data[0],_message);
+                  if(!nearVehicles.contains(_data[0])){
                     nearVehicles.add(_data[0]);
                   }
-                  nearby.put(_data[0],_message);
+                  
                 }
+
+                
 
                 if(count == PREVIUOS_POSITION_COUNT){
                   isUpdating = true;
                   _myprevdataToList = mydata.get('my')?.split(',').toList() ?? [];
                   prevmydata.put('my', _myprevdataToList.join(','));
-                  prevnearbydata.clear();
+          
                   for(var key in nearby.keys){
+                    
                     _nearprevdataToList = nearby.get(key)?.split(',').toList() ?? [];
                     prevnearbydata.put(key, _nearprevdataToList.join(',') );
                   }
                   count =0;
                 }
-                if(double.parse(_mydataToList[3])*0.1 <= 10){   //now going to take a turn
+                if(true){   //now going to take a turn
                   if(nearVehicles.isEmpty){
                     print("No near by vehicales can turn");
                     isPossibleToTurn = true;
@@ -103,7 +108,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     double tempDistance = 0;
                     List<String> _tempneardatalist=[];
                     for(var key in nearby.keys){
+                      print("now checking "+key);
                       _mydataToList = mydata.get("my")?.split(',').toList() ?? [];
+                      _myprevdataToList = prevmydata.get("my")?.split(',').toList() ?? [];
                       _tempneardatalist = nearby.get(key)?.split(',').toList() ?? [];
                       if(separateLanes(double.parse(_mydataToList[4]), double.parse(_tempneardatalist[3]))=="same"){     ///checking different lanes
                         print("heading is different, different lanes discard");
@@ -112,11 +119,19 @@ class _HomeScreenState extends State<HomeScreen> {
                         print("***************");
                       }
                       else{
-                        if(prevnearbydata.containsKey(key)){
-                          List<String> _tempnearprevdatalist = prevnearbydata.get(key)?.split(',').toList()??[];
-                          if(inFrontBehind(double.parse(_myprevdataToList[1]), double.parse(_myprevdataToList[2]), double.parse(_tempnearprevdatalist[1]),double.parse( _tempnearprevdatalist[2]), double.parse(_mydataToList[1]), double.parse(_mydataToList[2]), double.parse(_tempneardatalist[1]),double.parse( _tempneardatalist[2]))=='infront'){
+                        print('heading is ok');
+                        List<String> _tempnearprevdatalist = prevnearbydata.get(key)?.split(',').toList()??[];
+                        print(_tempnearprevdatalist.join(','));
+                        if(_tempnearprevdatalist.isNotEmpty){
+                          print("going to check infront or behind");
+
+                          print(_mydataToList.join(','));
+                          print(_myprevdataToList.join(','));
+                          print(_tempneardatalist.join(','));
+                          print(_tempnearprevdatalist.join(','));
+                          if(inFrontBehindDifferent(double.parse(_myprevdataToList[1]), double.parse(_myprevdataToList[2]), double.parse(_tempnearprevdatalist[1]),double.parse( _tempnearprevdatalist[2]), double.parse(_mydataToList[1]), double.parse(_mydataToList[2]), double.parse(_tempneardatalist[1]),double.parse( _tempneardatalist[2]))=='infront'){
                             tempDistance = distance(double.parse(_mydataToList[1]), double.parse(_mydataToList[2]), double.parse(_tempneardatalist[1]), double.parse(_tempneardatalist[2]));
-                        
+                            print("distance to near vehicle "+tempDistance.toString());
                             if(tempDistance< minDistance){
                               minDistance = tempDistance;
                               nearKey = key;
@@ -127,9 +142,32 @@ class _HomeScreenState extends State<HomeScreen> {
                       }
                      
                       print("nearby key "+nearKey);
+                      print("***************************");
                       
                       
                     }
+
+                    if(nearKey == ""){
+                      isPossibleToTurn = true;
+                      print("You can turn now now obstcale cehicles");
+                    }
+                    else{
+                      _neardataToList = nearby.get(nearKey)?.split(',').toList() ?? [];
+                      _nearprevdataToList = prevnearbydata.get(nearKey)?.split(',').toList() ?? [];
+
+                      isPossibleToTurn = possibleToRightTurn(double.parse(_myprevdataToList[1]), double.parse(_myprevdataToList[2]), 
+                      double.parse(_nearprevdataToList[1]),double.parse( _nearprevdataToList[2]), 
+                      double.parse(_mydataToList[1]), double.parse(_mydataToList[2]), double.parse( _mydataToList[3]),
+                      double.parse(_neardataToList[1]),double.parse( _neardataToList[2]), double.parse( _neardataToList[4]));
+                      if(isPossibleToTurn){
+                        print("You can turn now incoming vehicle is gonna stop");
+                      }
+                      else{
+                        print("can not turn");
+                      }
+                    }
+
+
                   }
                 
                 }
@@ -194,7 +232,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       size: 30,
                     ),
                     const SizedBox(width: 30),
-                    Text("65",
+                    Text(_mydataToList.isNotEmpty ?(double.parse(_mydataToList[3])*0.1).toInt().toString() : '0',
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 80.0,
