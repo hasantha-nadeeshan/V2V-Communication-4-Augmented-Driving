@@ -35,7 +35,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
   bool isPossibleToTurn = false;
 
-  File file = File(outputdir.path);
+  bool isRightTurnOn = false;
+
+
 
   late Box<String> mydata;
   late Box<String> prevmydata;
@@ -52,13 +54,19 @@ class _HomeScreenState extends State<HomeScreen> {
     prevmydata = Hive.box<String>('prev-my-data');
     prevnearbydata = Hive.box<String>('prev-nearby-data');
   }
+  void wantToRightTurn(){
+    setState(() {
+    isRightTurnOn = true;
+  });
+    print("turn state"+isRightTurnOn.toString());
+  }
+
   
   RawDatagramSocket? _socket;
   Future<void> _startListening() async {
     try {
           _socket = await RawDatagramSocket.bind("169.254.129.201", 5005);
-          Directory document = await getApplicationDocumentsDirectory();
-          file = File(document.path);
+    
           _socket!.listen((event) {
           if (event == RawSocketEvent.read) {
             final datagram = _socket!.receive();
@@ -82,6 +90,32 @@ class _HomeScreenState extends State<HomeScreen> {
                   
                 }
 
+                List<String> itemsToRemove = [];
+
+
+                if(nearVehicles.isNotEmpty){
+                  for (var key in nearVehicles) {
+                  List<String> _templist = nearby.get(key)?.split(',').toList() ?? [];
+                  int? millisecondsSinceEpoch = int.tryParse(_templist[5]);
+
+                  if (millisecondsSinceEpoch != null) {
+                    DateTime timestamp = DateTime.fromMillisecondsSinceEpoch(millisecondsSinceEpoch);
+                    Duration diff = timestamp.difference(DateTime.now());
+                    
+                    if (-1*diff.inMinutes > 1) {
+                      
+                      itemsToRemove.add(key);
+                    }
+                  }
+                  // Remove the items after the iteration is complete
+                  nearVehicles.removeWhere((item) => itemsToRemove.contains(item));
+                  print(nearVehicles.join(','));
+                }
+
+                
+
+
+                }
                 
 
                 if(count == PREVIUOS_POSITION_COUNT){
@@ -96,7 +130,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   }
                   count =0;
                 }
-                if(true){   //now going to take a turn
+                if(!isRightTurnOn){   //now going to take a turn
                   if(nearVehicles.isEmpty){
                     print("No near by vehicales can turn");
                     isPossibleToTurn = true;
@@ -116,7 +150,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         print("heading is different, different lanes discard");
                         print(_mydataToList.join(','));
                         print(_tempneardatalist.join(','));
-                        print("***************");
+                        
                       }
                       else{
                         print('heading is ok');
@@ -142,14 +176,14 @@ class _HomeScreenState extends State<HomeScreen> {
                       }
                      
                       print("nearby key "+nearKey);
-                      print("***************************");
+                      
                       
                       
                     }
 
                     if(nearKey == ""){
                       isPossibleToTurn = true;
-                      print("You can turn now now obstcale cehicles");
+                      print("You can turn now no obstcale vehicles");
                     }
                     else{
                       _neardataToList = nearby.get(nearKey)?.split(',').toList() ?? [];
@@ -166,12 +200,13 @@ class _HomeScreenState extends State<HomeScreen> {
                         print("can not turn");
                       }
                     }
+                    print("*****************************************");
 
 
                   }
                 
                 }
-                //if other side && velo <10 someone gonna turn 
+               
 
                 
                 isUpdating = false;
@@ -257,7 +292,29 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                 ),
+
+                const SizedBox(height: 25.0,),
+
+              const Center(
+                  child: Image(
+                    image: AssetImage("assets/newimg/car.png"),
+                    
+                  ),
+                ),
               
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Align(
+                    alignment: FractionalOffset.bottomRight,
+                    child: ElevatedButton(
+                      
+                      child: Text('--->'),
+                      onPressed: wantToRightTurn,
+                    ),
+                ),
+    
+              ) 
+                
                 
 
               
@@ -273,6 +330,6 @@ class _HomeScreenState extends State<HomeScreen> {
 }
 
 
-void removeExpiredElements(String name){
 
-}
+
+

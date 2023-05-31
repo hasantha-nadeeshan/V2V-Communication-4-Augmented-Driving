@@ -234,7 +234,7 @@ String inFrontBehindDifferent(
         prev_state_diff_lane = 'behind';
         return 'behind';
       } else {
-        print('in front');
+        print('infront');
         prev_state_diff_lane = 'infront';
         return 'infront';
       }
