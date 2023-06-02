@@ -7,20 +7,17 @@ import 'package:v2v_Com/constants.dart';
 
 class showDoNotTurn extends StatelessWidget {
   const showDoNotTurn({super.key});
-
-   @override
+@override
   Widget build(BuildContext context) {
-    return Container(
-            color: backgroundColorDark,
-            child: Center(  
+    return  Center(  
               child: 
                 AlertDialog(
-                  title: const Text('Don\'t Turn'),
-                  content: const Text('Wait for turning'),
-                  backgroundColor: Colors.orange,
+                  title: const Text('Don\'t turn now'),
+                  content: const Text('Wait to turn'),
+                  backgroundColor: Colors.red[900],
                 ),
               
-      ),
+     
     );
   }
 }

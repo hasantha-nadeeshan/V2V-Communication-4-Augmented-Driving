@@ -10,9 +10,7 @@ class showTurnNow extends StatelessWidget {
 
    @override
   Widget build(BuildContext context) {
-    return Container(
-            color: backgroundColorDark,
-            child: Center(  
+    return  Center(  
               child: 
                 AlertDialog(
                   title: const Text('Turn Now'),
@@ -20,7 +18,7 @@ class showTurnNow extends StatelessWidget {
                   backgroundColor: Colors.green,
                 ),
               
-      ),
+     
     );
   }
 }
