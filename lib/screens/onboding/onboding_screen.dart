@@ -3,6 +3,7 @@ import 'package:hive/hive.dart';
 import 'package:flutter/material.dart';
 import 'package:rive/rive.dart';
 import 'package:hive/hive.dart';
+import 'package:v2v_Com/entry_point.dart';
 import '../home/home_screen.dart';
 import 'components/animated_btn.dart';
 import 'components/custom_sign_in_dialog.dart';
@@ -28,7 +29,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       autoplay: false,
     );
     logdata = Hive.box('login');
-    _logDataToList = logdata.get('my')?.split(',').toList() ?? [];
+    _logDataToList = logdata.get('login')?.split(',').toList() ?? [];
     super.initState();
   }
 
@@ -102,7 +103,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                               context,
                               onCLosed: (_) {
                                 setState(() {
+                                  logdata.put('login','1');
+                                  print("logged");
                                   isSignInDialogShown = false;
+
                                 });
                               },
                             );
@@ -123,6 +127,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           )
         ],
       ),
-    ) : HomeScreen();
+    ) : EntryPoint();
   }
 }

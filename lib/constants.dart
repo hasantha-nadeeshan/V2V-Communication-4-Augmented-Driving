@@ -288,7 +288,9 @@ bool possibleToRightTurn(
 }
 
 ///for the vehicle which is allowing oncoming to do a right turn///
+///for the vehicle which is allowing oncoming to do a right turn///
 bool possibleToDecelerate(
+  double Heading_X, double Heading_H,
     double latH1,
     double lonH1,
     double latH2,
@@ -300,22 +302,29 @@ bool possibleToDecelerate(
     double lonX2,
     double spdX2) {
   // Assumes the vehicle expecting to turn right is at a velocity of 0ms-1 at the junction.
-  if (inFrontBehindDifferent(
-      lonH1, latH1, lonX1, latX1, lonH2, latH2, lonX2, latX2)=='infront') {
-    spdX2 = 0;
-    double widthOfRoad = 3.75; // Data
-    double d = pow(spdH2, 2) /
-        (2 * (distance(lonH2, latH2, lonX2, latX2) - (widthOfRoad / 2)));
-    double dMax =
-        4.6; // https://www.jsheld.com/insights/articles/a-naturalistic-study-of-vehicle-acceleration-and-deceleration-at-an-intersection
-    if (d <= dMax) {
-      print("Decelerate and stop at the intersection ahead");
-      return true;
-    } else {
-      print("Proceed");
+  if (separateLanes(Heading_X, Heading_H) != "same") {
+    if (inFrontBehindDifferent(
+            lonH1, latH1, lonX1, latX1, lonH2, latH2, lonX2, latX2) ==
+        'infront') {
+      spdX2 = 0;
+      double widthOfRoad = 3.75; // Data
+      double d = pow(spdH2, 2) /
+          (2 * (distance(lonH2, latH2, lonX2, latX2) - (widthOfRoad / 2)));
+      double dMax =
+          1.6; // https://www.jsheld.com/insights/articles/a-naturalistic-study-of-vehicle-acceleration-and-deceleration-at-an-intersection
+      if (d <= dMax) {
+        print("Decelerate and stop at the intersection ahead");
+        return true;
+      } else {
+        print("Proceed");
+        return false;
+      }
+    } 
+    else {
       return false;
     }
-  } else {
+  }
+  else{
     return false;
   }
 }
