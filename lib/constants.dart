@@ -12,7 +12,7 @@ const Color shadowColorLight = Color(0xFF4A5367);
 const Color shadowColorDark = Color.fromARGB(255, 29, 0, 0);
 
 
-const String EMERGENCY_VEHICLE_ID = "";
+const String EMERGENCY_VEHICLE_ID = "31";
 
 const int PREVIUOS_POSITION_COUNT = 50;
 const int BUFFER_SIZE = 5;

@@ -14,8 +14,8 @@ class emergencyAlertShow extends StatelessWidget {
             child: Center(  
               child: 
                 AlertDialog(
-                  title: const Text('Emergency Vehicle'),
-                  content: const Text('Notification'),
+                  title: const Text('Emergency Vehicle Alert'),
+                  content: const Text('Please Give way for Emergency Vehicle'),
                   backgroundColor: Colors.red,
                 ),
               

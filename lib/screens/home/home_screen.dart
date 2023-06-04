@@ -18,7 +18,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   String _message = "Waiting for messages...";
-  String _recmsg ="";
+  String _recmsg ="Waiting for messages...";
   String emgon="";
   String accion="";
   String mySpeed = '0';
@@ -72,6 +72,7 @@ class _HomeScreenState extends State<HomeScreen> {
               setState(() {
                 DateTime now = DateTime.now();
                 _message = "${String.fromCharCodes(datagram.data)},${DateTime.now().millisecondsSinceEpoch}";
+                _recmsg = "Communicating...";
                 _data = splitString(_message);
 
                 if(_data[0]=="my"){             //detecting my packets
@@ -180,83 +181,122 @@ class _HomeScreenState extends State<HomeScreen> {
     _socket?.close();
   }
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: ThemeClass.darkTheme.scaffoldBackgroundColor,
-      body: SafeArea(
-        bottom: false,
-        
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              const SizedBox(height: 20),
-              Center(
-                child: ElevatedButton(
-                    
+Widget build(BuildContext context) {
+  return Scaffold(
+    backgroundColor: ThemeClass.darkTheme.scaffoldBackgroundColor,
+    body: SafeArea(
+      bottom: false,
+      child: Container(
+        child: Stack(
+          children: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const SizedBox(height: 20),
+                Center(
+                  child: ElevatedButton(
                     onPressed: () {},
-                    // style: ButtonStyle(elevation: MaterialStateProperty(12.0 )),
                     style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.green,
-                        elevation: 12.0,
-                        textStyle: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 30.0,
-                          fontWeight: FontWeight.bold,
-                          )),
-                        
+                      backgroundColor: Colors.green,
+                      elevation: 12.0,
+                      textStyle: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 30.0,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                     child: Padding(
                       padding: const EdgeInsets.all(10.0),
-                      child:  Text(_message),
+                      child: Text(_recmsg),
                     ),
                   ),
-              ),
-              const SizedBox(height: 50),
-              Center(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.speed_outlined,
+                ),
+                const SizedBox(height: 50),
+                Center(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.speed_outlined,
+                        color: Colors.white,
+                        size: 30,
+                      ),
+                      const SizedBox(width: 30),
+                      Text(
+                        _mydataToList.isNotEmpty
+                            ? (double.parse(_mydataToList[3]) * 0.1).toInt().toString()
+                            : '0',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 80.0,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(width: 30),
+                      Text(
+                        "limit",
+                        style: TextStyle(
+                          color: Colors.white,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Center(
+                  child: Text(
+                    "Kmph",
+                    style: TextStyle(
+                      fontSize: 15.0,
                       color: Colors.white,
-                      size: 30,
                     ),
-                    const SizedBox(width: 30),
-                    Text(mySpeed,
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 80.0,
-                        fontWeight: FontWeight.bold
-                      ),
-                    ),
-                    const SizedBox(width:30),
-                    Text("limit",
-                      style: TextStyle(
-                        color: Colors.white,
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
-              ),
-              Center(
-                
-                  child: Text("Kmph",
-                      style: TextStyle(
-                        fontSize: 15.0,
-                        color: Colors.white,
+                const SizedBox(height: 25.0),
+                showEmergency ? emergencyAlertShow() : showAccident ? accidentAlertShow() : const SizedBox(height:160),
+                Center(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Align(
+                          alignment: FractionalOffset.bottomCenter,
+                          child: ElevatedButton(
+                            child: Text('<---'),
+                            onPressed: () {},
+                          ),
+                        ),
                       ),
-                    ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Align(
+                          alignment: FractionalOffset.bottomCenter,
+                          child: Image(
+                            image: AssetImage("assets/newimg/car.png"),
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Align(
+                          alignment: FractionalOffset.bottomCenter,
+                          child: ElevatedButton(
+                            child: Text('--->'),
+                            onPressed: (){},
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              
-                showEmergency ? emergencyAlertShow() : Text(''),
-                showAccident ? accidentAlertShow() : Text(''),
-                
-             
-              
-              
-            ],
-          ),
+              ],
+            ),
+           
+          ],
         ),
-      );
-    
-  }
+      ),
+    ),
+  );
+}
+
 }

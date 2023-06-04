@@ -48,7 +48,7 @@ class MyApp extends StatelessWidget {
           errorBorder: defaultInputBorder,
         ),
       ),
-      home:  HomeScreen(),
+      home:  EntryPoint(),
     );
   }
 }
