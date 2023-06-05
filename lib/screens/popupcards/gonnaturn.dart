@@ -5,10 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/material.dart';
 import 'package:v2v_Com/constants.dart';
 
-class showTurnNow extends StatelessWidget {
-  const showTurnNow({super.key});
+class showSomeOneGonnaTurn extends StatelessWidget {
+  const showSomeOneGonnaTurn({super.key});
 
-   @override
+  @override
   Widget build(BuildContext context) {
     return  Center(  
               child: 
@@ -27,10 +27,10 @@ class showTurnNow extends StatelessWidget {
                     backgroundColor: Colors.white,
                     radius: 208,
                     child: const CircleAvatar(
-                      backgroundColor: Colors.green,
+                      backgroundColor: Colors.red,
                       child: Center(
                         child: Icon(
-                          Icons.arrow_circle_right_rounded,
+                          Icons.front_hand_outlined,
                           size: 200.0,),
                       ),
                            radius: 200,
@@ -48,12 +48,12 @@ class showTurnNow extends StatelessWidget {
                     height: 10,
                   ), //SizedBox
                   SizedBox(
-                    width: 300,
+                    width: 500,
  
                     child: ElevatedButton(
                                   onPressed: (){},
                                   style: ButtonStyle(
-                                    backgroundColor: MaterialStateProperty.all(Colors.green),
+                                    backgroundColor: MaterialStateProperty.all(Colors.red),
                                   ),
                                   child: Padding(
                                     padding: const EdgeInsets.all(8),
@@ -65,7 +65,7 @@ class showTurnNow extends StatelessWidget {
                                           Icon(Icons.warning),
                                           SizedBox(width: 20.0),
                                           Text(
-                                            'Turn Now',
+                                            'Someone is going to turn',
                                             style: TextStyle(
                                               fontSize: 30.0,
                                               fontWeight: FontWeight.bold,

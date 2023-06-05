@@ -55,7 +55,7 @@ class showDoNotTurn extends StatelessWidget {
                                     backgroundColor: MaterialStateProperty.all(Colors.red),
                                   ),
                                   child: Padding(
-                                    padding: const EdgeInsets.all(4),
+                                    padding: const EdgeInsets.all(8),
                                     child: Align(
                                       alignment: Alignment.center,
                                       child: Row(

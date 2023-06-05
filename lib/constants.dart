@@ -307,10 +307,9 @@ bool possibleToDecelerate(
     if (inFrontBehindDifferent(
             lonH1, latH1, lonX1, latX1, lonH2, latH2, lonX2, latX2) ==
         'infront') {
-      spdX2 = 0;
       double widthOfRoad = 3.75; // Data
       double d = pow(spdH2, 2) /
-          (2 * (distance(lonH2, latH2, lonX2, latX2) - (widthOfRoad / 2)));
+          (2 * (distance(lonH2, latH2, lonX2, latX2) - (widthOfRoad)));
       double dMax =
           1.6; // https://www.jsheld.com/insights/articles/a-naturalistic-study-of-vehicle-acceleration-and-deceleration-at-an-intersection
       if (d <= dMax) {

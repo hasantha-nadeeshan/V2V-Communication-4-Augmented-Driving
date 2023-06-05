@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:v2v_Com/screens/popupcards/gonnaturn.dart';
 import 'dart:async';
 import 'dart:io';
 import '../../models/dumyData.dart';
@@ -35,9 +36,11 @@ class _HomeScreenState extends State<HomeScreen> {
   int emggcount =0;
   int noemggcount=0;
 
-  bool isPossibleToTurn = true;
+  bool isPossibleToTurn = false;
 
   bool isRightTurnOn = false;
+
+  bool isSomeOneGonnaTurn = true;
 
 
 
@@ -96,7 +99,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
                 List<String> itemsToRemove = [];
 
-
+                if(nearVehicles.isEmpty){
+                  isSomeOneGonnaTurn = false;
+                }
                 if(nearVehicles.isNotEmpty ){
                   for (var key in nearVehicles) {
                   List<String> _templist = nearby.get(key)?.split(',').toList() ?? [];
@@ -116,16 +121,21 @@ class _HomeScreenState extends State<HomeScreen> {
                   print(nearVehicles.join(','));
 
 
-                  // for(var key in nearVehicles){
-                  //   List<String> itemsNow = nearby.get(key)?.split(',').toList() ?? [];
-                  //   List<String> itemsPrev = prevnearbydata.get(key)?.split(',').toList() ?? [];
-                  //   if(itemsPrev.isNotEmpty && double.parse(itemsNow[4])<=10 && possibleToDecelerate(
-                  //       double.parse(_mydataToList[4]), double.parse(itemsNow[3]),
-                  //       double.parse(_myprevdataToList[2]),double.parse(_myprevdataToList[1])
-                  //   )){
-
-                  //   }
-                  // }
+                  for(var key in nearVehicles){
+                    List<String> itemsNow = nearby.get(key)?.split(',').toList() ?? [];
+                    List<String> itemsPrev = prevnearbydata.get(key)?.split(',').toList() ?? [];
+                    if(itemsPrev.isNotEmpty && 
+                      double.parse(itemsNow[4])<=10 &&
+                      separateLanes(double.parse(_mydataToList[3]),double.parse(itemsNow[3]))!="same" &&
+                      inFrontBehindDifferent(double.parse(_myprevdataToList[1]), double.parse(_myprevdataToList[2]), double.parse(itemsPrev[1]),double.parse( itemsPrev[2]), double.parse(_mydataToList[1]), double.parse(_mydataToList[2]), double.parse(itemsNow[1]),double.parse( itemsNow[2]))=='infront'
+                      ){
+                        
+                        isSomeOneGonnaTurn = true;
+                    }
+                    else{
+                      isSomeOneGonnaTurn = false;
+                    }
+                  }
                 }
 
                 
@@ -146,6 +156,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   }
                   count =0;
                 }
+
+
                 
                 if(isRightTurnOn){   //now going to take a turn
                   
@@ -365,7 +377,7 @@ Widget build(BuildContext context) {
 
               child: Align(
                 alignment: Alignment.center,
-                child: isRightTurnOn && isPossibleToTurn ? showTurnNow() : isRightTurnOn && !isPossibleToTurn ? showDoNotTurn() : Text(''),
+                child: isRightTurnOn && isPossibleToTurn ? showTurnNow() : isRightTurnOn && !isPossibleToTurn ? showDoNotTurn() : isSomeOneGonnaTurn ? showSomeOneGonnaTurn() : Text(''),
                
               )
                
