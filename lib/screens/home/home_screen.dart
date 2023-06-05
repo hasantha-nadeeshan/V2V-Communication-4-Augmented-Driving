@@ -250,6 +250,8 @@ class _HomeScreenState extends State<HomeScreen> {
   }
   @override
 Widget build(BuildContext context) {
+ 
+
   return Scaffold(
     backgroundColor: ThemeClass.darkTheme.scaffoldBackgroundColor,
     body: SafeArea(
@@ -320,7 +322,7 @@ Widget build(BuildContext context) {
                   ),
                 ),
                 const SizedBox(height: 25.0),
-                isRightTurnOn && isPossibleToTurn ? showTurnNow() : isRightTurnOn && !isPossibleToTurn ? showDoNotTurn() : Text(''),
+              //  isRightTurnOn && isPossibleToTurn ? showTurnNow() : isRightTurnOn && !isPossibleToTurn ? showDoNotTurn() : Text(''),
                 Center(
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -359,9 +361,14 @@ Widget build(BuildContext context) {
                 ),
               ],
             ),
-            Positioned(
-              top: 0,
-              child: isRightTurnOn && !isPossibleToTurn ? showDoNotTurn() : SizedBox(),
+            Positioned.fill(
+
+              child: Align(
+                alignment: Alignment.center,
+                child: isRightTurnOn && isPossibleToTurn ? showTurnNow() : isRightTurnOn && !isPossibleToTurn ? showDoNotTurn() : Text(''),
+               
+              )
+               
             ),
           ],
         ),
