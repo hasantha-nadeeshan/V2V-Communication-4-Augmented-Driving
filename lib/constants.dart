@@ -272,9 +272,10 @@ bool possibleToRightTurn(
   if (inFrontBehindDifferent(
       lonH1, latH1, lonX1, latX1, lonH2, latH2, lonX2, latX2)=='infront') {
     double widthOfRoad = 3.75; // Data
-    double d = pow(spdX2*(1/36), 2) / (2 * (distance(lonH2, latH2, lonX2, latX2) - (widthOfRoad / 2)));
+    double d = pow(spdX2*(1/36), 2) / (2 * (distance(lonH2, latH2, lonX2, latX2) - (widthOfRoad)));
+    print("de acceleration at now to stop "+d.toString());
     double dMax =
-        4.6; // https://www.jsheld.com/insights/articles/a-naturalistic-study-of-vehicle-acceleration-and-deceleration-at-an-intersection
+        1.6; // https://www.jsheld.com/insights/articles/a-naturalistic-study-of-vehicle-acceleration-and-deceleration-at-an-intersection
     if (d <= dMax) {
       print("Safer for a right turn");
       return true;
