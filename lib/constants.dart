@@ -40,7 +40,7 @@ double acceleration(double v1, double v2, double t1, double t2 ){
     return 0;
   }
   else{
-    return ((v2-v1)*1000/(t2-t1)*3600);
+    return (((v2-v1)*1000)/((t2-t1)*3600));
   }
 }
 
@@ -275,7 +275,7 @@ bool possibleToRightTurn(
     double d = pow(spdX2*(1/36), 2) / (2 * (distance(lonH2, latH2, lonX2, latX2) - (widthOfRoad)));
     print("de acceleration at now to stop "+d.toString());
     double dMax =
-        1.6; // https://www.jsheld.com/insights/articles/a-naturalistic-study-of-vehicle-acceleration-and-deceleration-at-an-intersection
+        0.9; // https://www.jsheld.com/insights/articles/a-naturalistic-study-of-vehicle-acceleration-and-deceleration-at-an-intersection
     if (d <= dMax) {
       print("Safer for a right turn");
       return true;
@@ -329,7 +329,78 @@ bool possibleToDecelerate(
   }
 }
 
-
+bool overtakingPossibility(
+    double lonH1,
+    double latH1,
+    double timeH1,
+    double spdH1,
+    double lonH2,
+    double latH2,   
+    double timeH2,
+    double spdH2,
+    double lonF1,
+    double latF1,
+    double lonF2,
+    double latF2,
+    double timeF1,
+    double timeF2,
+    double spdF1,
+    double spdF2,
+    double lonO1,
+    double latO1,
+    double lonO2,
+    double latO2,
+    double timeO1,
+    double timeO2,
+    double spdO1,
+    double spdO2) {
+  if (distance(lonH2, latH2, lonF2, latF2) >= 20) {
+    double relativeSpeed = spdH2 - spdF2;
+    if (relativeSpeed >= 20) {
+      double s1 =
+          20; // Minimum safety distance maintained between host and front vehicles before overtaking
+      double s2 =
+          20; // Minimum safety distance maintained between host and front vehicles after overtaking
+      double s3 =
+          20; // Minimum safety distance maintained between front and oncoming vehicles after overtaking
+      if (distance(lonH2, latH2, lonO2, latO2) >=
+          (s1 + s2) * (spdH2 + spdO2) / (spdH2 - spdF2) + s3) {
+        print( "Possible to overtake at current speed");
+        return true;
+      } else {
+        print("Cannot overtake at current speed. Need to accelerate");
+        return false;
+      }
+    } else {
+      double s1 =
+          20; // Minimum safety distance maintained between host and front vehicles before overtaking
+      double s2 =
+          20; // Minimum safety distance maintained between host and front vehicles after overtaking
+      double s3 =
+          20; // Minimum safety distance maintained between front and oncoming vehicles after overtaking
+      double s4 =
+          10; // Declaring a variable to find the displacement maintained between host and front vehicles at the beginning of accelerating (t=ta)
+      double a = acceleration(
+          spdH1, spdH2, timeH1, timeH2); // Acceleration suitable for overtaking
+      double ta = ((spdF2 - spdH2) +
+              sqrt((spdF2 - spdH2) * (spdF2 - spdH2) + 2 * a * (s1 + s4))) /
+          a;
+      double tc = (s2 - s4) /
+          sqrt((spdF2 - spdH2) * (spdF2 - spdH2) + 2 * a * (s1 + s4));
+      if (distance(lonH2, latH2, lonO2, latO2) >=
+          (spdH2 + spdO2) * (ta + tc) + a * (ta * ta) / 2 + a * ta * tc + s3) {
+        print( "Possible to overtake at $a ms-2 acceleration");
+        return true;
+      } else {
+        print( "Can't proceed with overtaking");
+        return false;
+      }
+    }
+  } else {
+    print("No overtaking is allowed");
+    return false;
+  }
+}
 
 
 class ThemeClass{

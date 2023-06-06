@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:v2v_Com/screens/popupcards/gonnaturn.dart';
+import 'package:v2v_Com/screens/popupcards/overtakewarning.dart';
 import 'dart:async';
 import 'dart:io';
 import '../../models/dumyData.dart';
@@ -12,6 +13,7 @@ import '../popupcards/turnnow.dart';
 import 'components/course_card.dart';
 import 'components/secondary_course_card.dart';
 import '../../constants.dart';
+import 'dart:math';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -20,9 +22,19 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+
+  double heading = 0;
   String _message = "Waiting for messages...";
   bool isUpdating = false;
   int count = 0;
+
+  String emgon="";
+  String accion="";
+  String mySpeed = '0';
+  bool showEmergency = false;
+  bool showAccident = false;
+  
+
   List<String> _data=[];
   List<String> _mydataToList = [];
   List<String> _myprevdataToList = [];
@@ -31,6 +43,11 @@ class _HomeScreenState extends State<HomeScreen> {
   List<String> currentState =[];
   List<String> nearVehicles =[];
 
+  List<String> _emgdataToList = [];
+  List<String>_emgprevdataToList = [];
+  List<String> currentEmgState =[];
+  List<String> currentAcciState = [];
+  
   double relativeDistance = 0;
   int miliseconds = 0;
   int emggcount =0;
@@ -40,9 +57,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
   bool isRightTurnOn = false;
 
-  bool isSomeOneGonnaTurn = true;
+  bool isSomeOneGonnaTurn = false;
 
-
+  bool isPossibleToOvertake = true;
 
   late Box<String> mydata;
   late Box<String> prevmydata;
@@ -101,48 +118,100 @@ class _HomeScreenState extends State<HomeScreen> {
 
                 if(nearVehicles.isEmpty){
                   isSomeOneGonnaTurn = false;
+                  isPossibleToOvertake = true;
+
                 }
                 if(nearVehicles.isNotEmpty ){
                   for (var key in nearVehicles) {
                   List<String> _templist = nearby.get(key)?.split(',').toList() ?? [];
                   int? millisecondsSinceEpoch = int.tryParse(_templist[5]);
 
-                  if (millisecondsSinceEpoch != null) {
-                    DateTime timestamp = DateTime.fromMillisecondsSinceEpoch(millisecondsSinceEpoch);
-                    Duration diff = timestamp.difference(DateTime.now());
-                    
-                    if (-1*diff.inMinutes > 1) {
+                    if (millisecondsSinceEpoch != null) {
+                      DateTime timestamp = DateTime.fromMillisecondsSinceEpoch(millisecondsSinceEpoch);
+                      Duration diff = timestamp.difference(DateTime.now());
                       
-                      itemsToRemove.add(key);
+                      if (-1*diff.inMinutes > 1) {
+                        
+                        itemsToRemove.add(key);
+                      }
                     }
                   }
                   // Remove the items after the iteration is complete
                   nearVehicles.removeWhere((item) => itemsToRemove.contains(item));
                   print(nearVehicles.join(','));
+                
 
-
-                  for(var key in nearVehicles){
-                    List<String> itemsNow = nearby.get(key)?.split(',').toList() ?? [];
-                    List<String> itemsPrev = prevnearbydata.get(key)?.split(',').toList() ?? [];
-                    if(itemsPrev.isNotEmpty && 
-                      double.parse(itemsNow[4])<=10 &&
-                      separateLanes(double.parse(_mydataToList[3]),double.parse(itemsNow[3]))!="same" &&
-                      inFrontBehindDifferent(double.parse(_myprevdataToList[1]), double.parse(_myprevdataToList[2]), double.parse(itemsPrev[1]),double.parse( itemsPrev[2]), double.parse(_mydataToList[1]), double.parse(_mydataToList[2]), double.parse(itemsNow[1]),double.parse( itemsNow[2]))=='infront'
-                      ){
+                
+                  // for(var key in nearVehicles){
+                  //   List<String> itemsNow = nearby.get(key)?.split(',').toList() ?? [];
+                  //   List<String> itemsPrev = prevnearbydata.get(key)?.split(',').toList() ?? [];
+                  //   if(itemsPrev.isNotEmpty && 
+                  //     double.parse(itemsNow[4])<=10 &&
+                  //     separateLanes(double.parse(_mydataToList[3]),double.parse(itemsNow[3]))!="same" &&
+                  //     inFrontBehindDifferent(double.parse(_myprevdataToList[1]), double.parse(_myprevdataToList[2]), double.parse(itemsPrev[1]),double.parse( itemsPrev[2]), double.parse(_mydataToList[1]), double.parse(_mydataToList[2]), double.parse(itemsNow[1]),double.parse( itemsNow[2]))=='infront'
+                  //     ){
                         
-                        isSomeOneGonnaTurn = true;
-                    }
-                    else{
-                      isSomeOneGonnaTurn = false;
-                    }
-                  }
+                  //       isSomeOneGonnaTurn = true;
+                  //   }
+                  //   else{
+                  //     isSomeOneGonnaTurn = false;
+                  //   }
+                  // }
                 }
+                // if(nearVehicles.isNotEmpty){
+                //   double minfrontdistance = double.infinity;
+                //   double minoppdistance = double.infinity;
+                //   String front_near_same ='';
+                //   String front_near_opp ="";
+                //   for(var key in nearVehicles){                
+                //     List<String> itemsNow = nearby.get(key)?.split(',').toList() ?? [];
+                //     List<String> itemsPrev = prevnearbydata.get(key)?.split(',').toList() ?? [];
+                    
+                //     if(itemsPrev.isNotEmpty){
+                //       String lane = separateLanes(double.parse(_mydataToList[4]), double.parse(itemsNow[3]));
+                      
+                //       if( lane == "same"){
+                //         String head = inFrontBehind(double.parse(_myprevdataToList[1]), double.parse(_myprevdataToList[2]), double.parse(itemsPrev[1]),double.parse( itemsPrev[2]), double.parse(_mydataToList[1]), double.parse(_mydataToList[2]), double.parse(itemsNow[1]),double.parse( itemsNow[2]));
+                //         if(head == "infront" && distance(double.parse(_mydataToList[1]), double.parse(_mydataToList[2]), double.parse(itemsNow[1]), double.parse(itemsNow[2]))< minfrontdistance){
+                //           front_near_same = key;
+                //         }
+                //       }
+                //       else if(lane =="opposite"){
+                //         String head = inFrontBehindDifferent(double.parse(_myprevdataToList[1]), double.parse(_myprevdataToList[2]), double.parse(itemsPrev[1]),double.parse( itemsPrev[2]), double.parse(_mydataToList[1]), double.parse(_mydataToList[2]), double.parse(itemsNow[1]),double.parse( itemsNow[2]));
+                //         if(head == "infront" && distance(double.parse(_mydataToList[1]), double.parse(_mydataToList[2]), double.parse(itemsNow[1]), double.parse(itemsNow[2]))< minfrontdistance){
+                //           front_near_opp = key;
+                //         }
+                //       }
+                //     }
+                //   }
+                //   if(front_near_opp == "" ||  front_near_same == ""){ 
+                //     isPossibleToOvertake = true;
+                //   }
+                //   else if(front_near_opp != "" && front_near_same != ""){ 
+                //     List<String> itemsNowfront = nearby.get(front_near_same)?.split(',').toList() ?? [];
+                //     List<String> itemsPrevfront = prevnearbydata.get(front_near_same)?.split(',').toList() ?? [];
+                //     List<String> itemsNowopp = nearby.get(front_near_opp)?.split(',').toList() ?? [];
+                //     List<String> itemsPrevopp = prevnearbydata.get(front_near_opp)?.split(',').toList() ?? [];
+
+                //     isPossibleToOvertake = overtakingPossibility(
+                //       double.parse(_myprevdataToList[1]),double.parse(_myprevdataToList[2]),
+                //       double.parse(_myprevdataToList[6]),double.parse(_myprevdataToList[3]),
+                //       double.parse(_mydataToList[1]),double.parse(_mydataToList[2]),
+                //       double.parse(_mydataToList[6]),double.parse(_mydataToList[3]),
+                //       double.parse(itemsPrevfront[1]),double.parse(itemsPrevfront[2]),
+                //       double.parse(itemsNowfront[1]),double.parse(itemsNowfront[2]),
+                //       double.parse(itemsPrevfront[6]),double.parse(itemsNowfront[6]),
+                //       double.parse(itemsPrevfront[4]),double.parse(itemsNowfront[4]),
+
+                //       double.parse(itemsPrevopp[1]),double.parse(itemsPrevopp[2]),
+                //       double.parse(itemsNowopp[1]),double.parse(itemsNowopp[2]),
+                //       double.parse(itemsPrevopp[6]),double.parse(itemsNowopp[6]),
+                //       double.parse(itemsPrevopp[4]),double.parse(itemsNowopp[4])
+                //     );
+                //   }
 
                 
-
-
-                }
-                
+                // }
 
                 if(count == PREVIUOS_POSITION_COUNT){
                   isUpdating = true;
@@ -349,15 +418,21 @@ Widget build(BuildContext context) {
                           ),
                         ),
                       ),
+
+                     
+                      
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Align(
                           alignment: FractionalOffset.bottomCenter,
-                          child: Image(
-                            image: AssetImage("assets/newimg/car.png"),
+                          child: Image.asset(
+                            
+                              "assets/newimg/car.png",
+                              scale:0.8,
+                            ),
                           ),
                         ),
-                      ),
+                      
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Align(
@@ -374,10 +449,40 @@ Widget build(BuildContext context) {
               ],
             ),
             Positioned.fill(
+              child: Align(
+                alignment: Alignment.centerRight,
+                child: Padding(
+                          padding: const EdgeInsets.all(45),
+                          child: Stack(
+                            alignment: Alignment.center,
+                            children: [
+                              Image.asset(
+                                'assets/newimg/cadrant.png',
+                                scale: 1.5,  
+                              ),
+                              Transform.rotate(
+                                angle: ((_mydataToList.isNotEmpty
+                            ? (double.parse(_mydataToList[4]) * 0.1).toInt()
+                            : 0)*(pi/180)*-1),
+                                child: Image.asset(
+                                  'assets/newimg/compass.png',
+                                  scale: 1.4,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+              ),
+            ),
+            Positioned.fill(
 
               child: Align(
                 alignment: Alignment.center,
-                child: isRightTurnOn && isPossibleToTurn ? showTurnNow() : isRightTurnOn && !isPossibleToTurn ? showDoNotTurn() : isSomeOneGonnaTurn ? showSomeOneGonnaTurn() : Text(''),
+                child: isRightTurnOn && isPossibleToTurn ? showTurnNow() : 
+                      isRightTurnOn && !isPossibleToTurn ? showDoNotTurn() : 
+                  //    isSomeOneGonnaTurn ? showSomeOneGonnaTurn() : 
+                      !isPossibleToOvertake ? showOvertakeWarning()
+                      : Text(''),
                
               )
                
