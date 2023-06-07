@@ -503,7 +503,7 @@ Widget build(BuildContext context) {
                 alignment: Alignment.center,
                 child: isRightTurnOn && isPossibleToTurn ? showTurnNow() : 
                       isRightTurnOn && !isPossibleToTurn ? showDoNotTurn() : 
-                  //    isSomeOneGonnaTurn ? showSomeOneGonnaTurn() : 
+                      isSomeOneGonnaTurn ? showSomeOneGonnaTurn() : 
                       showEmergency ? emergencyAlertShow() : 
                       showAccident ? accidentAlertShow()
                       : Text(''),

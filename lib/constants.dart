@@ -330,7 +330,7 @@ bool possibleToRightTurn(
     double d = pow(spdX2*(1/36), 2) / (2 * (distance(lonH2, latH2, lonX2, latX2) - (widthOfRoad)));
     print("de acceleration at now to stop "+d.toString());
     double dMax =
-        0.9; // https://www.jsheld.com/insights/articles/a-naturalistic-study-of-vehicle-acceleration-and-deceleration-at-an-intersection
+        0.98; // https://www.jsheld.com/insights/articles/a-naturalistic-study-of-vehicle-acceleration-and-deceleration-at-an-intersection
     if (d <= dMax) {
       print("Safer for a right turn");
       return true;
