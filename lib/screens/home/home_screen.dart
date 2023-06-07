@@ -259,71 +259,71 @@ class _HomeScreenState extends State<HomeScreen> {
                   print("distance , ${relativeDistance.toString()}");
 
                   if(_emgprevdataToList.isNotEmpty && _myprevdataToList.isNotEmpty){
-                    // String inter ="";
-                    // inter = intersection(double.parse(_mydataToList[4]), double.parse(_emgdataToList[3]),
-                    //    double.parse(_myprevdataToList[1]), double.parse(_myprevdataToList[2]),
-                    //    double.parse(_emgprevdataToList[1]), double.parse(_emgprevdataToList[2]),
-                    //  double.parse(_mydataToList[1]), double.parse(_mydataToList[2]),
-                    //    double.parse(_emgdataToList[1]), double.parse(_emgdataToList[2]));
-                    // print(inter);
+                    String inter ="";
+                    inter = intersection(double.parse(_mydataToList[4]), double.parse(_emgdataToList[3]),
+                       double.parse(_myprevdataToList[1]), double.parse(_myprevdataToList[2]),
+                       double.parse(_emgprevdataToList[1]), double.parse(_emgprevdataToList[2]),
+                     double.parse(_mydataToList[1]), double.parse(_mydataToList[2]),
+                       double.parse(_emgdataToList[1]), double.parse(_emgdataToList[2]));
+                    print(inter);
                      print(_mydataToList);
                      print(_myprevdataToList);
                      print(_emgdataToList);
                      print(_emgprevdataToList);
-                    if(relativeDistance>6){
-                      emgon = emergencyAlert(
-                      double.parse(_mydataToList[4]), double.parse(_emgdataToList[3]),
-                      double.parse(_myprevdataToList[1]), double.parse(_myprevdataToList[2]),
-                      double.parse(_emgprevdataToList[1]), double.parse(_emgprevdataToList[2]),
-                      double.parse(_mydataToList[1]), double.parse(_mydataToList[2]),
-                      double.parse(_emgdataToList[1]), double.parse(_emgdataToList[2])
-                      );
-                      accion = accidentAheadAlert(
-                      double.parse(_mydataToList[3]), double.parse(_emgdataToList[4]),
-                      double.parse(_myprevdataToList[1]), double.parse(_myprevdataToList[2]),
-                      double.parse(_emgprevdataToList[1]), double.parse(_emgprevdataToList[2]),
-                      double.parse(_mydataToList[1]), double.parse(_mydataToList[2]),
-                      double.parse(_emgdataToList[1]), double.parse(_emgdataToList[2]),
-                      double.parse(_emgdataToList[4])
-                      );
-                      currentEmgState.add(emgon);
-                      currentAcciState.add(accion);
-                      if(currentEmgState.length == BUFFER_SIZE+1){
-                        currentEmgState.clear();
-                      }
-                      if(currentAcciState.length == BUFFER_SIZE+1){
-                        currentAcciState.clear();
-                      }
-                      print(currentEmgState);
-                      print(currentAcciState);
-                      emggcount = currentEmgState.where((item) => item == "emergency").length;
-                      noemggcount = currentEmgState.where((item) => item == "no emergency").length;
-                      accicount = currentAcciState.where((item) => item == "accident").length;
-                      noaccicount = currentAcciState.where((item) => item == "no accident").length;
+                    // if(relativeDistance>6){
+                    //   emgon = emergencyAlert(
+                    //   double.parse(_mydataToList[4]), double.parse(_emgdataToList[3]),
+                    //   double.parse(_myprevdataToList[1]), double.parse(_myprevdataToList[2]),
+                    //   double.parse(_emgprevdataToList[1]), double.parse(_emgprevdataToList[2]),
+                    //   double.parse(_mydataToList[1]), double.parse(_mydataToList[2]),
+                    //   double.parse(_emgdataToList[1]), double.parse(_emgdataToList[2])
+                    //   );
+                    //   accion = accidentAheadAlert(
+                    //   double.parse(_mydataToList[4]), double.parse(_emgdataToList[3]),
+                    //   double.parse(_myprevdataToList[1]), double.parse(_myprevdataToList[2]),
+                    //   double.parse(_emgprevdataToList[1]), double.parse(_emgprevdataToList[2]),
+                    //   double.parse(_mydataToList[1]), double.parse(_mydataToList[2]),
+                    //   double.parse(_emgdataToList[1]), double.parse(_emgdataToList[2]),
+                    //   double.parse(_emgdataToList[4])
+                    //   );
+                    //   currentEmgState.add(emgon);
+                    //   currentAcciState.add(accion);
+                    //   if(currentEmgState.length == BUFFER_SIZE+1){
+                    //     currentEmgState.clear();
+                    //   }
+                    //   if(currentAcciState.length == BUFFER_SIZE+1){
+                    //     currentAcciState.clear();
+                    //   }
+                    //   print(currentEmgState);
+                    //   print(currentAcciState);
+                    //   emggcount = currentEmgState.where((item) => item == "emergency").length;
+                    //   noemggcount = currentEmgState.where((item) => item == "no emergency").length;
+                    //   accicount = currentAcciState.where((item) => item == "accident").length;
+                    //   noaccicount = currentAcciState.where((item) => item == "no accident").length;
 
-                      if(currentEmgState.length == BUFFER_SIZE && emggcount >= noemggcount){
-                        print("Emergency");
+                    //   if(currentEmgState.length == BUFFER_SIZE && emggcount >= noemggcount){
+                    //     print("Emergency");
 
-                        showEmergency =true;
-                        showAccident = false;
-                      }
-                      if(currentAcciState.length == BUFFER_SIZE && accicount >= noaccicount){
-                        print('accident');
-                        showAccident =true;
-                        showEmergency = false;
-                      }
+                    //     showEmergency =true;
+                    //     showAccident = false;
+                    //   }
+                    //   if(currentAcciState.length == BUFFER_SIZE && accicount >= noaccicount){
+                    //     print('accident');
+                    //     showAccident =true;
+                    //     showEmergency = false;
+                    //   }
                     
-                      if(currentEmgState.length == BUFFER_SIZE && emggcount < noemggcount){
-                        showEmergency = false;
-                        currentEmgState.clear();
-                      }
+                    //   if(currentEmgState.length == BUFFER_SIZE && emggcount < noemggcount){
+                    //     showEmergency = false;
+                    //     currentEmgState.clear();
+                    //   }
 
-                      if(currentAcciState.length == BUFFER_SIZE && accicount < noaccicount){
-                        print('no accident');
-                        showAccident = false;
-                        currentAcciState.clear();
-                      }
-                    }
+                    //   if(currentAcciState.length == BUFFER_SIZE && accicount < noaccicount){
+                    //     print('no accident');
+                    //     showAccident = false;
+                    //     currentAcciState.clear();
+                    //   }
+                    // }
                     
                     
                     print("************Done**********");  
