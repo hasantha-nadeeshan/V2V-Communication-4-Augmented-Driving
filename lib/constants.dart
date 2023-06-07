@@ -12,7 +12,7 @@ const Color shadowColorLight = Color(0xFF4A5367);
 const Color shadowColorDark = Color.fromARGB(255, 29, 0, 0);
 
 
-const String EMERGENCY_VEHICLE_ID = "105";
+const String EMERGENCY_VEHICLE_ID = "41";
 
 const int PREVIUOS_POSITION_COUNT = 50;
 const int BUFFER_SIZE = 5;
@@ -96,36 +96,36 @@ double distance(double lon1, double lat1, double lon2 , double lat2) {
 
 
 ///////////////////////////////////////// to identify vehicles in same and opposite lanes ///////////////////////////////////////////////
-// String separateLanes(double headingX, double headingH) {
-//   double headingDifference = (headingX - headingH).abs();
-//   double theta = 45; // theta = threshold heading difference
-
-//   if ((headingDifference < theta) ||
-//       (((360 - theta) < headingDifference) && (headingDifference < 360))) {
-//     return "same";
-//   } else if (((180 - theta) < headingDifference) &&
-//       (headingDifference < (180 + theta))) {
-//     return "opposite";
-//   } else {
-//     return "discard";
-//   }
-// }
-
-///////////////////////////////////////// to identify vahicles in same and opposite lanes, and left,right ///////////////////////////////////////////////
 String separateLanes(double headingX, double headingH) {
   double headingDifference = (headingX - headingH).abs();
   double theta = 45; // theta = threshold heading difference
 
-  if ((headingDifference < theta)|| (((360 - theta) < headingDifference) && (headingDifference < 360))) {
+  if ((headingDifference < theta) ||
+      (((360 - theta) < headingDifference) && (headingDifference < 360))) {
     return "same";
-  } else if (((180 - theta) < headingDifference) && (headingDifference < (180 + theta))) {
+  } else if (((180 - theta) < headingDifference) &&
+      (headingDifference < (180 + theta))) {
     return "opposite";
-  } else if ((theta < headingDifference) && (headingDifference < (180-theta))){
-    return "right";
-  } else{
-        return "left";
+  } else {
+    return "discard";
   }
-  }
+}
+
+///////////////////////////////////////// to identify vahicles in same and opposite lanes, and left,right ///////////////////////////////////////////////
+// String separateLanes(double headingX, double headingH) {
+//   double headingDifference = (headingX - headingH).abs();
+//   double theta = 45; // theta = threshold heading difference
+
+//   if ((headingDifference < theta)|| (((360 - theta) < headingDifference) && (headingDifference < 360))) {
+//     return "same";
+//   } else if (((180 - theta) < headingDifference) && (headingDifference < (180 + theta))) {
+//     return "opposite";
+//   } else if ((theta < headingDifference) && (headingDifference < (180-theta))){
+//     return "right";
+//   } else{
+//         return "left";
+//   }
+//   }
 
 String prev_state_left_right = '';
 
