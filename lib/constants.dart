@@ -12,7 +12,7 @@ const Color shadowColorLight = Color(0xFF4A5367);
 const Color shadowColorDark = Color.fromARGB(255, 29, 0, 0);
 
 
-const String EMERGENCY_VEHICLE_ID = "197";
+const String EMERGENCY_VEHICLE_ID = "105";
 
 const int PREVIUOS_POSITION_COUNT = 50;
 const int BUFFER_SIZE = 5;
@@ -96,21 +96,76 @@ double distance(double lon1, double lat1, double lon2 , double lat2) {
 
 
 ///////////////////////////////////////// to identify vehicles in same and opposite lanes ///////////////////////////////////////////////
+// String separateLanes(double headingX, double headingH) {
+//   double headingDifference = (headingX - headingH).abs();
+//   double theta = 45; // theta = threshold heading difference
+
+//   if ((headingDifference < theta) ||
+//       (((360 - theta) < headingDifference) && (headingDifference < 360))) {
+//     return "same";
+//   } else if (((180 - theta) < headingDifference) &&
+//       (headingDifference < (180 + theta))) {
+//     return "opposite";
+//   } else {
+//     return "discard";
+//   }
+// }
+
+///////////////////////////////////////// to identify vahicles in same and opposite lanes, and left,right ///////////////////////////////////////////////
 String separateLanes(double headingX, double headingH) {
   double headingDifference = (headingX - headingH).abs();
   double theta = 45; // theta = threshold heading difference
 
-  if ((headingDifference < theta) ||
-      (((360 - theta) < headingDifference) && (headingDifference < 360))) {
+  if ((headingDifference < theta)|| (((360 - theta) < headingDifference) && (headingDifference < 360))) {
     return "same";
-  } else if (((180 - theta) < headingDifference) &&
-      (headingDifference < (180 + theta))) {
+  } else if (((180 - theta) < headingDifference) && (headingDifference < (180 + theta))) {
     return "opposite";
-  } else {
-    return "discard";
+  } else if ((theta < headingDifference) && (headingDifference < (180-theta))){
+    return "right";
+  } else{
+        return "left";
   }
-}
+  }
 
+String prev_state_left_right = '';
+
+
+//////////////////////////////////////////////////////////////// identifying vehicles in left and right in intersection //////////////////////////////////////////////
+
+
+String intersection(double headingH, double headingX, double lonH1, double latH1,
+  double lonX1, double latX1, double lonH2, double latH2, double lonX2, double latX2) {
+  double X1_H1 = distance(lonX1, latX1, lonH1, latH1);
+  double X2_H2 = distance(lonX2, latX2, lonH2, latH2);
+  String direction = separateLanes(headingX, headingH);
+
+  if ((X2_H2 - X1_H1).abs() < 0.5) {
+    X2_H2 = X1_H1;
+  }
+
+  if (X2_H2 < X1_H1) {
+    if (direction == "right") {
+      prev_state_left_right = "lefttowards";
+      print("right-lefttowards");
+      return "lefttowards";
+    }
+    else if (direction == "left") {
+      prev_state_left_right ="righttowards";
+      print("left-righttowards");
+      return "righttowards";
+    }
+    else{
+      return "";
+    }
+  }
+  else if (X2_H2 == X1_H1){
+    return prev_state_left_right;
+  }
+  else{
+    return "";
+  }
+
+}
 
 
 //////////////////////////////////////////////////// to identify vehicles which are in front and behind in the same lane //////////////////////////////////////////////
@@ -169,30 +224,30 @@ int emgcount =0;
 
 ///////////////////////////////////////// emergency vehicle sample //////////////////////////////////////////////////
 String emergencyAlert(double Heading_H, double Heading_X, double lonH1, double latH1, double lonX1, double latX1, double lonH2, double latH2, double lonX2, double latX2) {
-  // if (separateLanes(Heading_X, Heading_H) == "same") {
+   if (separateLanes(Heading_X, Heading_H) == "same") {
     if (inFrontBehind(lonH1, latH1, lonX1, latX1, lonH2, latH2, lonX2, latX2) == "behind") {
       emgcount=emgcount+1;
       return "emergency";
     }
     else{
       noemgcount = noemgcount+1;
-    return "no emergency";
+      return "no emergency";
     }
   }
-  // else{
-  //   noemgcount= noemgcount+1;
-  //   print("heading problem");
-  //   return "no emergency ";
-  // }
-//}
+  else{
+    noemgcount= noemgcount+1;
+    print("heading problem");
+    return "no emergency";
+  }
+}
 ///////////////////////////////////////// accident ahead sample //////////////////////////////////////////////////
 String accidentAheadAlert(double Heading_H, double Heading_X, double lonH1, double latH1, double lonX1, double latX1, double lonH2, double latH2, double lonX2, double latX2, double spdX2) {
   if (separateLanes(Heading_X, Heading_H) == "same") {
-    if (inFrontBehind(lonH1, latH1, lonX1, latX1, lonH2, latH2, lonX2, latX2) == "infront" && spdX2 <10) {
+    if (inFrontBehind(lonH1, latH1, lonX1, latX1, lonH2, latH2, lonX2, latX2) == "infront" && spdX2 <=10) {
       return "accident";
     }
   }
-  return "";
+  return "no accident";
 }
 
 String prev_state_diff_lane = '';

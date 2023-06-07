@@ -30,8 +30,9 @@ class showTurnNow extends StatelessWidget {
                       backgroundColor: Colors.green,
                       child: Center(
                         child: Icon(
-                          Icons.arrow_circle_right_rounded,
-                          size: 200.0,),
+                          Icons.directions_outlined,
+                          size: 280.0,
+                          color: Colors.white,),
                       ),
                            radius: 200,
                     ), //CircleAvatar

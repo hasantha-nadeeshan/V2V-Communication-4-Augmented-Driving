@@ -47,11 +47,16 @@ class _HomeScreenState extends State<HomeScreen> {
   List<String>_emgprevdataToList = [];
   List<String> currentEmgState =[];
   List<String> currentAcciState = [];
-  
+
   double relativeDistance = 0;
   int miliseconds = 0;
   int emggcount =0;
   int noemggcount=0;
+
+
+  int accicount =0;
+  int noaccicount =0;
+  
 
   bool isPossibleToTurn = false;
 
@@ -59,7 +64,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   bool isSomeOneGonnaTurn = false;
 
-  bool isPossibleToOvertake = true;
+  
 
   late Box<String> mydata;
   late Box<String> prevmydata;
@@ -113,12 +118,11 @@ class _HomeScreenState extends State<HomeScreen> {
                 }
 
                 
-
                 List<String> itemsToRemove = [];
 
                 if(nearVehicles.isEmpty){
                   isSomeOneGonnaTurn = false;
-                  isPossibleToOvertake = true;
+                  
 
                 }
                 if(nearVehicles.isNotEmpty ){
@@ -142,82 +146,16 @@ class _HomeScreenState extends State<HomeScreen> {
                 
 
                 
-                  // for(var key in nearVehicles){
-                  //   List<String> itemsNow = nearby.get(key)?.split(',').toList() ?? [];
-                  //   List<String> itemsPrev = prevnearbydata.get(key)?.split(',').toList() ?? [];
-                  //   if(itemsPrev.isNotEmpty && 
-                  //     double.parse(itemsNow[4])<=10 &&
-                  //     separateLanes(double.parse(_mydataToList[3]),double.parse(itemsNow[3]))!="same" &&
-                  //     inFrontBehindDifferent(double.parse(_myprevdataToList[1]), double.parse(_myprevdataToList[2]), double.parse(itemsPrev[1]),double.parse( itemsPrev[2]), double.parse(_mydataToList[1]), double.parse(_mydataToList[2]), double.parse(itemsNow[1]),double.parse( itemsNow[2]))=='infront'
-                  //     ){
-                        
-                  //       isSomeOneGonnaTurn = true;
-                  //   }
-                  //   else{
-                  //     isSomeOneGonnaTurn = false;
-                  //   }
-                  // }
+                  
                 }
-                // if(nearVehicles.isNotEmpty){
-                //   double minfrontdistance = double.infinity;
-                //   double minoppdistance = double.infinity;
-                //   String front_near_same ='';
-                //   String front_near_opp ="";
-                //   for(var key in nearVehicles){                
-                //     List<String> itemsNow = nearby.get(key)?.split(',').toList() ?? [];
-                //     List<String> itemsPrev = prevnearbydata.get(key)?.split(',').toList() ?? [];
-                    
-                //     if(itemsPrev.isNotEmpty){
-                //       String lane = separateLanes(double.parse(_mydataToList[4]), double.parse(itemsNow[3]));
-                      
-                //       if( lane == "same"){
-                //         String head = inFrontBehind(double.parse(_myprevdataToList[1]), double.parse(_myprevdataToList[2]), double.parse(itemsPrev[1]),double.parse( itemsPrev[2]), double.parse(_mydataToList[1]), double.parse(_mydataToList[2]), double.parse(itemsNow[1]),double.parse( itemsNow[2]));
-                //         if(head == "infront" && distance(double.parse(_mydataToList[1]), double.parse(_mydataToList[2]), double.parse(itemsNow[1]), double.parse(itemsNow[2]))< minfrontdistance){
-                //           front_near_same = key;
-                //         }
-                //       }
-                //       else if(lane =="opposite"){
-                //         String head = inFrontBehindDifferent(double.parse(_myprevdataToList[1]), double.parse(_myprevdataToList[2]), double.parse(itemsPrev[1]),double.parse( itemsPrev[2]), double.parse(_mydataToList[1]), double.parse(_mydataToList[2]), double.parse(itemsNow[1]),double.parse( itemsNow[2]));
-                //         if(head == "infront" && distance(double.parse(_mydataToList[1]), double.parse(_mydataToList[2]), double.parse(itemsNow[1]), double.parse(itemsNow[2]))< minfrontdistance){
-                //           front_near_opp = key;
-                //         }
-                //       }
-                //     }
-                //   }
-                //   if(front_near_opp == "" ||  front_near_same == ""){ 
-                //     isPossibleToOvertake = true;
-                //   }
-                //   else if(front_near_opp != "" && front_near_same != ""){ 
-                //     List<String> itemsNowfront = nearby.get(front_near_same)?.split(',').toList() ?? [];
-                //     List<String> itemsPrevfront = prevnearbydata.get(front_near_same)?.split(',').toList() ?? [];
-                //     List<String> itemsNowopp = nearby.get(front_near_opp)?.split(',').toList() ?? [];
-                //     List<String> itemsPrevopp = prevnearbydata.get(front_near_opp)?.split(',').toList() ?? [];
-
-                //     isPossibleToOvertake = overtakingPossibility(
-                //       double.parse(_myprevdataToList[1]),double.parse(_myprevdataToList[2]),
-                //       double.parse(_myprevdataToList[6]),double.parse(_myprevdataToList[3]),
-                //       double.parse(_mydataToList[1]),double.parse(_mydataToList[2]),
-                //       double.parse(_mydataToList[6]),double.parse(_mydataToList[3]),
-                //       double.parse(itemsPrevfront[1]),double.parse(itemsPrevfront[2]),
-                //       double.parse(itemsNowfront[1]),double.parse(itemsNowfront[2]),
-                //       double.parse(itemsPrevfront[6]),double.parse(itemsNowfront[6]),
-                //       double.parse(itemsPrevfront[4]),double.parse(itemsNowfront[4]),
-
-                //       double.parse(itemsPrevopp[1]),double.parse(itemsPrevopp[2]),
-                //       double.parse(itemsNowopp[1]),double.parse(itemsNowopp[2]),
-                //       double.parse(itemsPrevopp[6]),double.parse(itemsNowopp[6]),
-                //       double.parse(itemsPrevopp[4]),double.parse(itemsNowopp[4])
-                //     );
-                //   }
-
                 
-                // }
 
                 if(count == PREVIUOS_POSITION_COUNT){
                   isUpdating = true;
                   _myprevdataToList = mydata.get('my')?.split(',').toList() ?? [];
                   prevmydata.put('my', _myprevdataToList.join(','));
-          
+                  _emgprevdataToList = nearby.get(EMERGENCY_VEHICLE_ID)?.split(',').toList() ?? [];
+                  prevnearbydata.put(EMERGENCY_VEHICLE_ID, _emgprevdataToList.join(','));
                   for(var key in nearby.keys){
                     
                     _nearprevdataToList = nearby.get(key)?.split(',').toList() ?? [];
@@ -226,7 +164,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   count =0;
                 }
 
-
+                
                 
                 if(isRightTurnOn){   //now going to take a turn
                   
@@ -302,7 +240,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       }
                       print("*****************************************");
 
-
+                      
                     }
                   }
                   else{
@@ -311,7 +249,87 @@ class _HomeScreenState extends State<HomeScreen> {
                 
                 }
                
+                if(_data[0]==EMERGENCY_VEHICLE_ID && !isUpdating && !isRightTurnOn){      //When emmergency data comes and not updating loop
+                  nearby.put(_data[0],_message);
+                  _mydataToList = mydata.get("my")?.split(',').toList() ?? [];
+                  _emgdataToList = nearby.get(EMERGENCY_VEHICLE_ID)?.split(',').toList() ?? [];
+                  _myprevdataToList = prevmydata.get('my')?.split(',').toList() ?? [];
+                  _emgprevdataToList = prevnearbydata.get(EMERGENCY_VEHICLE_ID)?.split(',').toList() ?? [];
+                  relativeDistance = distance(double.parse(_mydataToList[1]), double.parse(_mydataToList[2]), double.parse(_emgdataToList[1]), double.parse(_emgdataToList[2]));
+                  print("distance , ${relativeDistance.toString()}");
 
+                  if(_emgprevdataToList.isNotEmpty && _myprevdataToList.isNotEmpty){
+                    // String inter ="";
+                    // inter = intersection(double.parse(_mydataToList[4]), double.parse(_emgdataToList[3]),
+                    //    double.parse(_myprevdataToList[1]), double.parse(_myprevdataToList[2]),
+                    //    double.parse(_emgprevdataToList[1]), double.parse(_emgprevdataToList[2]),
+                    //  double.parse(_mydataToList[1]), double.parse(_mydataToList[2]),
+                    //    double.parse(_emgdataToList[1]), double.parse(_emgdataToList[2]));
+                    // print(inter);
+                     print(_mydataToList);
+                     print(_myprevdataToList);
+                     print(_emgdataToList);
+                     print(_emgprevdataToList);
+                    if(relativeDistance>6){
+                      emgon = emergencyAlert(
+                      double.parse(_mydataToList[4]), double.parse(_emgdataToList[3]),
+                      double.parse(_myprevdataToList[1]), double.parse(_myprevdataToList[2]),
+                      double.parse(_emgprevdataToList[1]), double.parse(_emgprevdataToList[2]),
+                      double.parse(_mydataToList[1]), double.parse(_mydataToList[2]),
+                      double.parse(_emgdataToList[1]), double.parse(_emgdataToList[2])
+                      );
+                      accion = accidentAheadAlert(
+                      double.parse(_mydataToList[3]), double.parse(_emgdataToList[4]),
+                      double.parse(_myprevdataToList[1]), double.parse(_myprevdataToList[2]),
+                      double.parse(_emgprevdataToList[1]), double.parse(_emgprevdataToList[2]),
+                      double.parse(_mydataToList[1]), double.parse(_mydataToList[2]),
+                      double.parse(_emgdataToList[1]), double.parse(_emgdataToList[2]),
+                      double.parse(_emgdataToList[4])
+                      );
+                      currentEmgState.add(emgon);
+                      currentAcciState.add(accion);
+                      if(currentEmgState.length == BUFFER_SIZE+1){
+                        currentEmgState.clear();
+                      }
+                      if(currentAcciState.length == BUFFER_SIZE+1){
+                        currentAcciState.clear();
+                      }
+                      print(currentEmgState);
+                      print(currentAcciState);
+                      emggcount = currentEmgState.where((item) => item == "emergency").length;
+                      noemggcount = currentEmgState.where((item) => item == "no emergency").length;
+                      accicount = currentAcciState.where((item) => item == "accident").length;
+                      noaccicount = currentAcciState.where((item) => item == "no accident").length;
+
+                      if(currentEmgState.length == BUFFER_SIZE && emggcount >= noemggcount){
+                        print("Emergency");
+
+                        showEmergency =true;
+                        showAccident = false;
+                      }
+                      if(currentAcciState.length == BUFFER_SIZE && accicount >= noaccicount){
+                        print('accident');
+                        showAccident =true;
+                        showEmergency = false;
+                      }
+                    
+                      if(currentEmgState.length == BUFFER_SIZE && emggcount < noemggcount){
+                        showEmergency = false;
+                        currentEmgState.clear();
+                      }
+
+                      if(currentAcciState.length == BUFFER_SIZE && accicount < noaccicount){
+                        print('no accident');
+                        showAccident = false;
+                        currentAcciState.clear();
+                      }
+                    }
+                    
+                    
+                    print("************Done**********");  
+                  }
+                
+                }
                 
                 isUpdating = false;
             
@@ -481,7 +499,8 @@ Widget build(BuildContext context) {
                 child: isRightTurnOn && isPossibleToTurn ? showTurnNow() : 
                       isRightTurnOn && !isPossibleToTurn ? showDoNotTurn() : 
                   //    isSomeOneGonnaTurn ? showSomeOneGonnaTurn() : 
-                      !isPossibleToOvertake ? showOvertakeWarning()
+                      showEmergency ? emergencyAlertShow() : 
+                      showAccident ? accidentAlertShow()
                       : Text(''),
                
               )

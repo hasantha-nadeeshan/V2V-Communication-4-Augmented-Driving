@@ -30,7 +30,8 @@ class showDoNotTurn extends StatelessWidget {
                       child: Center(
                         child: Icon(
                           Icons.front_hand_outlined,
-                          size: 200.0,),
+                          size: 240.0,
+                          color: Colors.white,),
                       ),
                            radius: 200,
                     ), //CircleAvatar
